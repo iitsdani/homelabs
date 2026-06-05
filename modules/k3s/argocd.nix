@@ -17,7 +17,7 @@
     name = "argo-cd";
     repo = "https://argoproj.github.io/argo-helm";
     version = "9.5.15";
-    hash = "sha256-3Dws6JyctCsonegPUpXRbV5/l/KWMztx613Polh31f0=";
+    hash = "sha256-lVAr6oVuLh6b+7elq5DTCZcLT/0Jj/Pa25kYg1B2i54=";
     targetNamespace = "argo-system";
     createNamespace = true;
     values = {
