@@ -51,7 +51,7 @@ spec:
       annotations:
         cert-manager.io/cluster-issuer: cianfr.one-acme
         external-dns.alpha.kubernetes.io/hostname: &host media.cianfr.one
-        external-dns.alpha.kubernetes.io/target: in.nl.cianfr.one
+        external-dns.alpha.kubernetes.io/target: in.it.cianfr.one
       hosts:
         - host: *host
           paths:

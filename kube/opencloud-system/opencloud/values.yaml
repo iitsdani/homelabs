@@ -26,7 +26,7 @@ ingress:
     annotations:
       cert-manager.io/cluster-issuer: cianfr.one-acme
       external-dns.alpha.kubernetes.io/hostname: &host drive.cianfr.one
-      external-dns.alpha.kubernetes.io/target: in.nl.cianfr.one
+      external-dns.alpha.kubernetes.io/target: in.it.cianfr.one
       nginx.ingress.kubernetes.io/proxy-body-size: "0"
       nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
       nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
