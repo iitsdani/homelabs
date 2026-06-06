@@ -9,7 +9,7 @@ helmCharts:
     repo: https://victoriametrics.github.io/helm-charts/
     # To update: https://github.com/VictoriaMetrics/helm-charts/releases?q=victoria-metrics-k8s-stack&expanded=true
     # https://docs.victoriametrics.com/helm/victoriametrics-k8s-stack/#upgrade-guide
-    version: 0.79.1
+    version: 0.81.0
     releaseName: victoriametrics
     namespace: *namespace
     includeCRDs: true
