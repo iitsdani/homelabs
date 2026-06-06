@@ -48,7 +48,7 @@ configMaps:
     data:
       TZ: Europe/Amsterdam
       OC_URL: https://drive.cianfr.one
-      OC_LOG_LEVEL: debug
+      OC_LOG_LEVEL: info
       STORAGE_USERS_DRIVER: posix
       STORAGE_USERS_ID_CACHE_STORE: nats-js-kv
       MICRO_REGISTRY_ADDRESS: 127.0.0.1:9233
