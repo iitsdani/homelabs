@@ -137,7 +137,14 @@ persistence:
   external-videos:
     type: persistentVolumeClaim
     existingClaim: media-videos-v1
-    globalMounts: [{ path: /external/videos }]
+    globalMounts:
+      - path: /external/videos
+  external-library:
+    type: nfs
+    server: truenas.home.arpa
+    path: /mnt/pool0/gallery/external
+    globalMounts:
+      - path: /external/library
   library:
     type: persistentVolumeClaim
     existingClaim: immich-library-v4
