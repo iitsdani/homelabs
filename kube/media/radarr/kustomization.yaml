@@ -6,4 +6,4 @@ namespace: media
 
 resources:
   - persistentvolumeclaims.yaml
-  - helmrelease.yaml
+#   - helmrelease.yaml
