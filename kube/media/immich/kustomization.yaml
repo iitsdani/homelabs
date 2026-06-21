@@ -15,13 +15,13 @@ generators:
 helmCharts:
   - name: app-template
     repo: https://bjw-s-labs.github.io/helm-charts
-    version: 4.6.2
+    version: 5.0.1
     releaseName: immich-server
     namespace: *namespace
     valuesFile: values-server.yaml
   - name: app-template
     repo: https://bjw-s-labs.github.io/helm-charts
-    version: 4.6.2
+    version: 5.0.1
     releaseName: immich-machine-learning
     namespace: *namespace
     valuesFile: values-machine-learning.yaml
