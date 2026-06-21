@@ -43,7 +43,7 @@ controllers:
           TZ: Europe/Amsterdam
         image:
           repository: ghcr.io/linuxserver/kavita
-          tag: latest@sha256:f83f9023ab9407b5ca5261afbbfe8d0ef5039ba3295265480663086e14ad78a4
+          tag: latest@sha256:93b8d00423b0259805beee3004acd9d70af41e6a632a53547abfad0ca6a0ddaa
         probes:
           liveness: { enabled: false }
           readiness: { enabled: false }
