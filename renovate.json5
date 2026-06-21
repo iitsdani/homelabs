@@ -8,6 +8,11 @@
       matchManagers: "github-actions",
     },
     {
+      matchPackageNames: ["ghcr.io/linuxserver/*"],
+      matchUpdateTypes: ["digest"],
+      automerge: true,
+    },
+    {
       matchPackageNames: ["ghcr.io/music-assistant/server"],
       versioning: "pep440",
     },
