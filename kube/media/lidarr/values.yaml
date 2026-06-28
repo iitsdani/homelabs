@@ -42,6 +42,8 @@ controllers:
           PGID: 1000
           PGUID: 1000
           TZ: Europe/Amsterdam
+        # NOTE: using the nightly version for the plugin system
+        # Source: https://wiki.servarr.com/lidarr/plugins
         image:
           repository: ghcr.io/linuxserver/lidarr
           tag: nightly
