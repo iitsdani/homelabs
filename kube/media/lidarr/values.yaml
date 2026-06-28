@@ -44,7 +44,7 @@ controllers:
           TZ: Europe/Amsterdam
         image:
           repository: ghcr.io/linuxserver/lidarr
-          tag: 3.1.0@sha256:d2f944115de2ca6754ad142ee92f9db481b1574c7bc030974d624584106b78d7
+          tag: nightly
         probes:
           liveness: { enabled: false }
           readiness: { enabled: false }
