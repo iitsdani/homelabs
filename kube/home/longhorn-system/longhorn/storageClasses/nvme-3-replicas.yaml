@@ -15,5 +15,3 @@ parameters:
   dataEngine: "v2"
   fsType: "ext4"
   dataLocality: "best-effort"
-  replicaSoftAntiAffinity: "disabled"
-  replicaAutoBalance: "best-effort"

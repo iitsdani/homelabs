@@ -16,8 +16,6 @@ parameters:
   fsType: ext4
   dataLocality: best-effort
   encrypted: "true"
-  replicaSoftAntiAffinity: "disabled"
-  replicaAutoBalance: "best-effort"
   csi.storage.k8s.io/provisioner-secret-name: "longhorn-crypto"
   csi.storage.k8s.io/provisioner-secret-namespace: "longhorn-system"
   csi.storage.k8s.io/node-publish-secret-name: "longhorn-crypto"

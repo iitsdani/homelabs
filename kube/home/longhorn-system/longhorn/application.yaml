@@ -32,7 +32,9 @@ spec:
         defaultSettings:
           v1DataEngine: false
           v2DataEngine: true
+          defaultDataLocality: best-effort
           storageMinimalAvailablePercentage: "10"
+          allowVolumeCreationWithDegradedAvailability: false
           allowCollectingLonghornUsageMetrics: false
           autoCleanupSnapshotWhenDeleteBackup: true
           autoCleanupSnapshotAfterOnDemandBackupCompleted: true
@@ -41,7 +43,7 @@ spec:
           rwxVolumeFastFailover: true
           nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod
           replicaSoftAntiAffinity: false
-          replicaAutoBalance: best-effort
+          replicaAutoBalance: least-effort
           lockedVolumeAutoCleanup: true
           freezeFilesystemForSnapshot: true
           concurrentAutomaticEngineUpgradePerNodeLimit: 3
