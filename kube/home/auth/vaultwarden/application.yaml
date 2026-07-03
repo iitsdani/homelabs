@@ -1,0 +1,93 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: vaultwarden
+  namespace: argo-system
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://gissilabs.github.io/charts
+    chart: vaultwarden
+    targetRevision: 1.4.0
+    helm:
+      releaseName: vaultwarden
+      valuesObject:
+        image:
+          repository: ghcr.io/dani-garcia/vaultwarden
+          tag: 1.36.0@sha256:d626d04934cd1192ad8ced1adb975099fca78cec33ab467d2d3c923cde7f3b0c
+          pullPolicy: IfNotPresent
+
+        resources:
+          limits:
+            cpu: 500m
+            memory: 512Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+
+        replicaCount: 1
+
+        database:
+          type: sqlite
+          wal: true
+
+        service:
+          type: ClusterIP
+          httpPort: 80
+          externalTrafficPolicy: Cluster
+
+        strategy:
+          type: Recreate
+
+        ingress:
+          enabled: true
+          className: nginx
+          annotations:
+            cert-manager.io/cluster-issuer: cianfr.one-acme
+            external-dns.alpha.kubernetes.io/hostname: vault.cianfr.one
+            external-dns.alpha.kubernetes.io/target: in.it.cianfr.one
+          host: vault.cianfr.one
+          tls:
+            - hosts:
+                - vault.cianfr.one
+              secretName: vaultwarden-cianfr.one-tls
+
+        persistence:
+          enabled: true
+          existingClaim: vaultwarden-v2
+
+        vaultwarden:
+          domain: https://vault.cianfr.one
+          allowSignups: false
+          requireEmail: true
+          verifySignup: true
+          allowInvitation: true
+          showPasswordHint: true
+          enableWebVault: true
+          orgCreationUsers: danilocianfr@gmail.com
+
+          admin:
+            enabled: true
+
+          smtp:
+            enabled: true
+            host: smtp.gmail.com
+            from: "nl.homelab.ar3s3ru@gmail.com"
+            port: "587"
+            existingSecret: vaultwarden-secrets
+  destination:
+    name: in-cluster
+    namespace: auth
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - ServerSideApply=true
+      - ApplyOutOfSyncOnly=true
+      - SkipDryRunOnMissingResource=true
