@@ -25,7 +25,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: frigate-media-v3
-  namespace: media
+  namespace: home-automation
 spec:
   storageClassName: ""
   volumeName: frigate-media-v3

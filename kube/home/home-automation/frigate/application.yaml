@@ -1,0 +1,180 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: frigate
+  namespace: argo-system
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://blakeblackshear.github.io/blakeshome-charts
+    chart: frigate
+    targetRevision: 7.8.0
+    helm:
+      releaseName: frigate
+      valuesObject:
+        env:
+          TZ: Europe/Amsterdam
+
+        envFromSecrets:
+          - frigate-secrets
+
+        securityContext:
+          privileged: true # Needs this to access the GPU for hwaccel
+
+        podAnnotations:
+          reloader.stakater.com/auto: "true"
+
+        image:
+          repository: ghcr.io/blakeblackshear/frigate
+          tag: 0.17.1@sha256:1724960349dad0bd2ae8ec884171a6fd5755a4dc242a0e66cadbda9c0e85c99b
+          pullPolicy: IfNotPresent
+
+        resources:
+          requests:
+            gpu.intel.com/i915: "1"
+          limits:
+            gpu.intel.com/i915: "1"
+
+        affinity:
+          nodeAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+              - weight: 100
+                preference:
+                  matchExpressions:
+                    - key: cianfr.one/gpu.transcoding.speed
+                      operator: In
+                      values:
+                        - fast
+              - weight: 50
+                preference:
+                  matchExpressions:
+                    - key: cianfr.one/gpu.transcoding.speed
+                      operator: In
+                      values:
+                        - medium
+
+        tolerations:
+          - key: cianfr.one/gpu.transcoding.speed
+            operator: Equal
+            value: medium
+            effect: NoSchedule
+
+        ingress:
+          enabled: true
+          ingressClassName: tailscale
+          hosts:
+            - host: &host frigate
+              paths:
+                - path: /
+                  portName: http
+          tls:
+            - hosts:
+                - *host
+
+        persistence:
+          config:
+            enabled: true
+            existingClaim: frigate-config-v2
+          media:
+            enabled: true
+            existingClaim: frigate-media-v3
+
+        config: |
+          mqtt:
+            host: "mosquitto.home-automation.svc.cluster.local"
+            port: 1883
+
+          ffmpeg:
+            hwaccel_args: preset-intel-qsv-h264
+
+          # This is needed for Proxmox VE Intel GPU passthrough, where frigate gets confused
+          # on which device to actually use (should be card0).
+          telemetry:
+            stats:
+              intel_gpu_device: "drm:/dev/dri/card0"
+
+          detect:
+            enabled: false
+
+          record:
+            enabled: true
+            retain:
+              days: 1
+              mode: all
+
+          # Source: https://docs.frigate.video/configuration/object_detectors/#openvino-detector
+          detectors:
+            ov_0:
+              type: openvino
+              device: GPU
+
+          model:
+            width: 300
+            height: 300
+            input_tensor: nhwc
+            input_pixel_format: bgr
+            path: /openvino-model/ssdlite_mobilenet_v2.xml
+            labelmap_path: /openvino-model/coco_91cl_bkgr.txt
+
+          go2rtc:
+            streams:
+              e1-zoom-01:
+                - rtsp://{FRIGATE_E1_ZOOM_01_RTSP_USERNAME}:{FRIGATE_E1_ZOOM_01_RTSP_PASSWORD}@10.90.0.11/h264Preview_01_main
+                - "ffmpeg:e1-zoom-01#audio=opus"
+              e1-zoom-01-sub:
+                - rtsp://{FRIGATE_E1_ZOOM_01_RTSP_USERNAME}:{FRIGATE_E1_ZOOM_01_RTSP_PASSWORD}@10.90.0.11/h264Preview_01_sub
+                - "ffmpeg:e1-zoom-01-sub#audio=opus"
+              e1-zoom-02:
+                - rtsp://{FRIGATE_E1_ZOOM_02_RTSP_USERNAME}:{FRIGATE_E1_ZOOM_02_RTSP_PASSWORD}@10.90.0.12/h264Preview_01_main
+                - "ffmpeg:e1-zoom-02#audio=opus"
+              e1-zoom-02-sub:
+                - rtsp://{FRIGATE_E1_ZOOM_02_RTSP_USERNAME}:{FRIGATE_E1_ZOOM_02_RTSP_PASSWORD}@10.90.0.12/h264Preview_01_sub
+                - "ffmpeg:e1-zoom-02-sub#audio=opus"
+
+          cameras:
+            e1-zoom-01:
+              live:
+                stream_name: e1-zoom-01-sub
+              ffmpeg:
+                output_args:
+                  record: preset-record-generic-audio-copy
+                inputs:
+                  - path: rtsp://127.0.0.1:8554/e1-zoom-01?video&audio
+                    input_args: preset-rtsp-restream
+                    roles:
+                      - record
+                  - path: rtsp://127.0.0.1:8554/e1-zoom-01-sub?video&audio
+                    input_args: preset-rtsp-restream
+                    roles:
+                      - detect
+            e1-zoom-02:
+              live:
+                stream_name: e1-zoom-02-sub
+              ffmpeg:
+                output_args:
+                  record: preset-record-generic-audio-copy
+                inputs:
+                  - path: rtsp://127.0.0.1:8554/e1-zoom-02?video&audio
+                    input_args: preset-rtsp-restream
+                    roles:
+                      - record
+                  - path: rtsp://127.0.0.1:8554/e1-zoom-02-sub?video&audio
+                    input_args: preset-rtsp-restream
+                    roles:
+                      - detect
+  destination:
+    name: in-cluster
+    namespace: home-automation
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - ServerSideApply=true
+      - ApplyOutOfSyncOnly=true
+      - SkipDryRunOnMissingResource=true
