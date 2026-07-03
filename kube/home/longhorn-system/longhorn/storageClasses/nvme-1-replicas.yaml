@@ -6,7 +6,7 @@ metadata:
 provisioner: driver.longhorn.io
 allowVolumeExpansion: true
 reclaimPolicy: Retain
-volumeBindingMode: WaitForFirstConsumer
+volumeBindingMode: Immediate
 parameters:
   numberOfReplicas: "1"
   staleReplicaTimeout: "120"
@@ -14,6 +14,6 @@ parameters:
   diskSelector: "nvme"
   dataEngine: "v2"
   fsType: "ext4"
-  dataLocality: "strict-local"
-  replicaSoftAntiAffinity: "false"
+  dataLocality: "best-effort"
+  replicaSoftAntiAffinity: "disabled"
   replicaAutoBalance: "best-effort"
