@@ -1,0 +1,95 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: music-assistant
+  namespace: argo-system
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://bjw-s-labs.github.io/helm-charts
+    chart: app-template
+    targetRevision: 5.0.1
+    helm:
+      releaseName: music-assistant
+      valuesObject:
+        controllers:
+          main:
+            type: deployment
+            replicas: 1
+            annotations:
+              reloader.stakater.com/auto: "true"
+            containers:
+              main:
+                image:
+                  repository: ghcr.io/music-assistant/server
+                  tag: "2.8.8@sha256:81d256df059d09d4fbdf1cab33b0dcf5f8e216b65efe9cadd8624b7f00d2faf9"
+                env:
+                  LOG_LEVEL: info
+                probes:
+                  liveness:
+                    enabled: false
+                  readiness:
+                    enabled: false
+                  startup:
+                    enabled: false
+
+        service:
+          main:
+            type: LoadBalancer
+            controller: main
+            ipFamilyPolicy: RequireDualStack
+            ipFamilies:
+              - IPv4
+              - IPv6
+            annotations:
+              io.cilium/lb-ipam-ips: "10.0.3.4,fd00:cafe::3:4"
+            ports:
+              http:
+                port: 8095
+              streaming:
+                port: 8097
+
+        ingress:
+          tailscale:
+            enabled: true
+            className: tailscale
+            hosts:
+              - host: mass
+                paths:
+                  - path: /
+                    pathType: Prefix
+                    service:
+                      identifier: main
+                      port: http
+            tls:
+              - hosts:
+                  - mass
+
+        persistence:
+          tmp:
+            enabled: true
+            type: emptyDir
+            globalMounts:
+              - path: /tmp
+          data:
+            enabled: true
+            type: persistentVolumeClaim
+            existingClaim: music-assistant-data-v2
+            globalMounts:
+              - path: /data
+  destination:
+    name: in-cluster
+    namespace: home-automation
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - ServerSideApply=true
+      - ApplyOutOfSyncOnly=true
+      - SkipDryRunOnMissingResource=true
