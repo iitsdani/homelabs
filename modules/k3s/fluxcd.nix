@@ -17,16 +17,14 @@
 
   services.k3s.autoDeployCharts.flux-operator = {
     name = "flux-operator";
-    repo = "oci://ghcr.io/controlplaneio-fluxcd/charts";
+    repo = "oci://ghcr.io/controlplaneio-fluxcd/charts/flux-operator";
     version = "0.53.0";
-    hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+    hash = "sha256-jcJd4LRFkKeU6ttWRMvJwL1Q0+hGyg2gIOchk29XBsI=";
     targetNamespace = "flux-system";
     createNamespace = true;
     values = {
       installCRDs = true;
-      serviceMonitor = {
-        create = true;
-      };
+      serviceMonitor.create = true;
     };
   };
 }
