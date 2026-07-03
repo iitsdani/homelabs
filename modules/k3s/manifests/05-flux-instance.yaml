@@ -10,7 +10,7 @@ metadata:
     fluxcd.controlplane.io/reconcileTimeout: "5m"
 spec:
   distribution:
-    version: "2.9.x"
+    version: "2.x"
     registry: "ghcr.io/fluxcd"
   components:
     - source-controller
@@ -51,4 +51,3 @@ spec:
               name: sops-age
               mountPath: /sops-age
               readOnly: true
-

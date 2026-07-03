@@ -1,0 +1,116 @@
+---
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: cilium
+  namespace: kube-system
+spec:
+  bootstrap: true
+  repo: https://helm.cilium.io/
+  chart: cilium
+  version: "1.19.4"
+  targetNamespace: networking
+  createNamespace: true
+  valuesContent: |-
+    kubeProxyReplacement: true
+    k8sServiceHost: "10.0.1.1"
+    k8sServicePort: 6443
+
+    ipam:
+      mode: kubernetes
+
+    routingMode: native
+    autoDirectNodeRoutes: true
+
+    ipv4:
+      enabled: true
+    ipv6:
+      enabled: true
+
+    ipv4NativeRoutingCIDR: "10.42.0.0/16"
+    ipv6NativeRoutingCIDR: "fd00:cafe:42::/48"
+
+    MTU: 1500
+
+    enableIPv4Masquerade: true
+    enableIPv6Masquerade: true
+    bpf:
+      masquerade: true
+
+    fragmentTracking: true
+
+    pmtuDiscovery:
+      enabled: true
+
+    bgpControlPlane:
+      enabled: true
+
+    operator:
+      replicas: 2
+      prometheus:
+        enabled: true
+        serviceMonitor:
+          enabled: true
+          trustCRDsExist: true
+
+    hubble:
+      enabled: true
+      relay:
+        enabled: true
+        prometheus:
+          enabled: true
+          serviceMonitor:
+            enabled: true
+            trustCRDsExist: true
+      ui:
+        enabled: true
+        ingress:
+          enabled: true
+          className: "tailscale"
+          hosts:
+            - "hubble"
+          tls:
+            - hosts:
+                - "hubble"
+      tls:
+        auto:
+          enabled: true
+          method: helm
+      metrics:
+        enabled:
+          - "dns"
+          - "drop"
+          - "tcp"
+          - "flow"
+          - "icmp"
+          - "http"
+        serviceMonitor:
+          enabled: true
+          trustCRDsExist: true
+
+    envoy:
+      prometheus:
+        serviceMonitor:
+          enabled: true
+          trustCRDsExist: true
+
+    gatewayAPI:
+      enabled: true
+      gatewayClass:
+        create: "true"
+      secretsNamespace:
+        name: "networking"
+        create: false
+
+    prometheus:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+        trustCRDsExist: true
+
+    nodePort:
+      enabled: true
+    externalIPs:
+      enabled: true
+    hostPort:
+      enabled: true

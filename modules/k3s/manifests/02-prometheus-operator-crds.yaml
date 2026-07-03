@@ -1,0 +1,12 @@
+---
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: &name prometheus-operator-crds
+  namespace: &namespace telemetry
+spec:
+  bootstrap: true
+  repo: https://prometheus-community.github.io/helm-charts
+  chart: *name
+  version: 29.0.0
+  targetNamespace: *namespace

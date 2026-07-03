@@ -20,20 +20,6 @@
     };
   };
 
-  services.k3s.autoDeployCharts.tailscale-operator = rec {
-    name = "tailscale-operator";
-    repo = "https://pkgs.tailscale.com/helmcharts";
-    version = "1.98.3";
-    hash = "sha256-p0E+sM6RWB/2b8caF9oM8Zoagi7XqE+0tSeGzrFwZaA=";
-    targetNamespace = "networking";
-    extraFieldDefinitions = {
-      spec = {
-        inherit version;
-      };
-    };
-    values = {
-      operatorConfig.hostname = "nl-k8s";
-      apiServerProxyConfig.mode = "true";
-    };
-  };
+  # Tailscale operator is deployed via a static HelmChart manifest in
+  # manifests/03-tailscale-operator.yaml with bootstrap=true.
 }
