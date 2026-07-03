@@ -52,7 +52,6 @@
               ssh-to-age
               sops
               inetutils
-              authelia # For management purposes.
               immich-go # For bulk imports.
               q-text-as-data # For querying CSV/TSV files.
               garage # Management of garage system.

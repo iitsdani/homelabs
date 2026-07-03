@@ -19,7 +19,7 @@ Since `colmena` is imported as a flake (due to compatibility with `nixosConfigur
 To run it, use the following command, replacing `{nodes}` with the target machines:
 
 ```
-nix run github:zhaofengli/colmena -- apply --on "{nodes}"
+nix run github:nix-community/colmena -- apply --on "{nodes}"
 ```
 
 ### Fast node provisioning with `nixos-anywhere`
@@ -35,6 +35,7 @@ nix run github:nix-community/nixos-anywhere -- --flake .#{node} {user}@{addr}
 ```
 
 replacing:
+
 - `{node}` with the name of the configuration node,
 - `{user}` with the name of the user, typically `root`,
 - `{addr}` with the address of the node.

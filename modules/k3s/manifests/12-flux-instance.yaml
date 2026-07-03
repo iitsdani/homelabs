@@ -1,0 +1,54 @@
+---
+apiVersion: fluxcd.controlplane.io/v1
+kind: FluxInstance
+metadata:
+  name: flux
+  namespace: flux-system
+  annotations:
+    fluxcd.controlplane.io/reconcile: "enabled"
+    fluxcd.controlplane.io/reconcileEvery: "1h"
+    fluxcd.controlplane.io/reconcileTimeout: "5m"
+spec:
+  distribution:
+    version: "2.9.x"
+    registry: "ghcr.io/fluxcd"
+  components:
+    - source-controller
+    - kustomize-controller
+    - helm-controller
+    - notification-controller
+  cluster:
+    type: kubernetes
+    size: small
+    networkPolicy: false
+    domain: "cluster.local"
+  sync:
+    kind: GitRepository
+    url: "ssh://git@github.com/iitsdani/homelabs.git"
+    ref: "refs/heads/main"
+    path: "kube/home"
+    pullSecret: "flux-ssh-auth"
+  kustomize:
+    patches:
+      - target:
+          kind: Deployment
+          name: "(kustomize-controller|helm-controller)"
+        patch: |
+          - op: add
+            path: /spec/template/spec/containers/0/env/-
+            value:
+              name: SOPS_AGE_KEY_FILE
+              value: /sops-age/keys.txt
+          - op: add
+            path: /spec/template/spec/volumes/-
+            value:
+              name: sops-age
+              secret:
+                secretName: flux-sops-age-key
+          - op: add
+            path: /spec/template/spec/containers/0/volumeMounts/-
+            value:
+              name: sops-age
+              mountPath: /sops-age
+              readOnly: true
+

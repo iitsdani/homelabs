@@ -1,0 +1,15 @@
+---
+# Cilium LoadBalancer IP Pool — replaces MetalLB's IPAddressPool.
+# Same ranges as the previous metallb-pool to keep existing
+# Service.status.loadBalancer.ingress IPs stable.
+apiVersion: cilium.io/v2
+kind: CiliumLoadBalancerIPPool
+metadata:
+  name: default-pool
+  annotations:
+spec:
+  blocks:
+    - cidr: 10.0.3.0/24
+    - cidr: fd00:cafe::3:0/112
+    # FIXME(ar3s3ru): Hardcoded KPN GUA prefix. Must update after moving to new ISP.
+    - cidr: 2a02:a469:9060:3::/112

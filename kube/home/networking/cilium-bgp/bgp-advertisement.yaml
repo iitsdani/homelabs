@@ -1,0 +1,21 @@
+---
+# Advertise LoadBalancer Service IPs to BGP peers.
+# Selected by the matchLabels rule in the peer configs (advertise: bgp).
+apiVersion: cilium.io/v2
+kind: CiliumBGPAdvertisement
+metadata:
+  name: services
+  labels:
+    advertise: bgp
+  annotations:
+spec:
+  advertisements:
+    - advertisementType: Service
+      service:
+        addresses:
+          - LoadBalancerIP
+      selector:
+        matchExpressions:
+          - key: somekey
+            operator: NotIn
+            values: ["never-match"]

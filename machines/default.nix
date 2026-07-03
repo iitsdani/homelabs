@@ -15,7 +15,6 @@ inputs@{ nixpkgs, sops-nix, disko, ... }:
     # By default, use the Tailnet hostname.
     deployment.targetHost = lib.mkDefault "${config.networking.hostName}.tail2ff90.ts.net";
 
-    nix.settings.substituters = [ "https://nl-attic.tail2ff90.ts.net/main" ];
     nix.settings.trusted-public-keys = [ "main:n0xPC74lOqQnzDSNH3QBE0aWLRdXwuK9ztFxxpMG/Xg=" ];
 
     imports = [

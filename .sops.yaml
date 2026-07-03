@@ -3,7 +3,7 @@ keys:
   - &ar3s3ru C8DAE39DAA00FF97
   - &github-actions age18eehnlpn44hpk4d823zfnkq72vqmf6kqhrh009uwdajneeaqzskqscx589
   # Generated manually using `age-keygen -o age.agekey`
-  - &argocd age1m38eu4srfs6puqtrpcazlu5kv24fd57yda4p505k9msqjwzttujs825kzl
+  - &fluxcd age1m38eu4srfs6puqtrpcazlu5kv24fd57yda4p505k9msqjwzttujs825kzl
   # Generated using `cat /etc/ssh/ssh_host_ed25519_key.pub | ssh-to-age`,
   # where the SSH host key is obtained from the remote machine.
   - &nl-k8s-01 age1krvwskkgw5f3ufcwgl6l2jz0emxnkn40wpup2aqhqdulqy2x99js4p5fnq
@@ -65,14 +65,14 @@ creation_rules:
       - pgp:
           - *ar3s3ru
         age:
-          - *argocd
+          - *fluxcd
   - path_regex: "kube-hetzner/.*.enc.yaml"
     encrypted_regex: "^(data|stringData)$"
     key_groups:
       - pgp:
           - *ar3s3ru
         age:
-          - *argocd
+          - *fluxcd
   - path_regex: "networking/.*/secrets.yaml"
     key_groups:
       - pgp:

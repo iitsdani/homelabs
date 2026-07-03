@@ -1,0 +1,26 @@
+---
+# Cilium BGP Cluster Config — selects all nodes (no nodeSelector)
+# and references the v4 + v6 peer configs.
+apiVersion: cilium.io/v2
+kind: CiliumBGPClusterConfig
+metadata:
+  name: default
+  annotations:
+spec:
+  nodeSelector:
+    matchLabels:
+      kubernetes.io/os: linux
+  bgpInstances:
+    - name: default
+      localASN: 64512
+      peers:
+        - name: router-v4
+          peerASN: 64512
+          peerAddress: 10.0.0.1
+          peerConfigRef:
+            name: router-v4
+        - name: router-v6
+          peerASN: 64512
+          peerAddress: fd00:cafe::1
+          peerConfigRef:
+            name: router-v6

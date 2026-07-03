@@ -2,7 +2,7 @@
   imports = [
     ./server.nix
     ./cilium.nix
-    ./argocd.nix
+    ./fluxcd.nix
     ./tailscale.nix
   ];
 
