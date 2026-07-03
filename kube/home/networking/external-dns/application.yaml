@@ -1,0 +1,32 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: external-dns-cloudflare
+  namespace: argo-system
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  sources:
+    - repoURL: https://kubernetes-sigs.github.io/external-dns/
+      chart: external-dns
+      targetRevision: 1.21.1
+      helm:
+        releaseName: external-dns-cloudflare
+        valueFiles:
+          - $values/kube/home/networking/external-dns/values-cloudflare.yaml
+    - repoURL: git@github.com:iitsdani/homelabs.git
+      targetRevision: refs/heads/main
+      ref: values
+  destination:
+    name: in-cluster
+    namespace: networking
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - ServerSideApply=true
+      - ApplyOutOfSyncOnly=true
+      - SkipDryRunOnMissingResource=true

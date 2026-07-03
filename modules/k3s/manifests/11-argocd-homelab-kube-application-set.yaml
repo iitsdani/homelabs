@@ -1,0 +1,81 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: namespaces
+  namespace: argo-system
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+    - git:
+        repoURL: &repo git@github.com:iitsdani/homelabs.git
+        revision: main
+        directories:
+          - path: kube/home/*
+  template:
+    metadata:
+      name: "ns-{{.path.basename}}" # ns-networking, ns-longhorn-system, etc.
+    spec:
+      project: default
+      source:
+        repoURL: *repo
+        targetRevision: main
+        path: "{{.path.path}}"
+      # Namespace resources under kube/home/<ns>/ are cluster-scoped Namespace
+      # objects, so the Application destination namespace is cosmetic here.
+      # Keep it at argo-system for clarity (that's where the Application
+      # object itself lives).
+      destination:
+        name: in-cluster
+        namespace: argo-system
+      syncPolicy:
+        automated:
+          selfHeal: true
+          prune: true
+        syncOptions:
+          - ServerSideApply=true
+          - ApplyOutOfSyncOnly=true
+          - SkipDryRunOnMissingResource=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: apps
+  namespace: argo-system
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+    - git:
+        repoURL: &repo git@github.com:iitsdani/homelabs.git
+        revision: main
+        directories:
+          - path: kube/home/*/* # Matches kube/home/<namespace>/<app>
+  template:
+    metadata:
+      name: "app-{{.path.basename}}" # app name is last path segment.
+    spec:
+      project: default
+      source:
+        repoURL: *repo
+        targetRevision: main
+        path: "{{.path.path}}"
+      # Derive destination namespace from the Git path: for
+      # kube/home/<namespace>/<app>, .path.segments is
+      # ["kube", "home", "<namespace>", "<app>"], so index 2 is the
+      # namespace. This ensures Helm-rendered resources (which otherwise
+      # inherit the Application's destination namespace via ArgoCD's
+      # server-side apply) land in the correct namespace rather than
+      # argo-system.
+      destination:
+        name: in-cluster
+        namespace: "{{index .path.segments 2}}"
+      syncPolicy:
+        automated:
+          selfHeal: true
+          prune: true
+        syncOptions:
+          - ServerSideApply=true
+          - ApplyOutOfSyncOnly=true
+          - SkipDryRunOnMissingResource=true

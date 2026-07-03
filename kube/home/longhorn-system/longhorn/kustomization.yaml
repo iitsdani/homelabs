@@ -1,15 +1,21 @@
 ---
+# yaml-language-server: $schema=https://www.schemastore.org/kustomization.json
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  - helmrepository.yaml
-  - helmrelease.yaml
+  - application.yaml
   - longhorn-nixos-path.yaml
   - longhorn-add-nixos-path.yaml
+  # NOTE: apparently we cannot use globbing...
+  # https://github.com/kubernetes-sigs/kustomize/issues/119
   - storageClasses/nvme-1-replicas.yaml
   - storageClasses/nvme-2-replicas.yaml
   - storageClasses/nvme-3-replicas.yaml
   - storageClasses/nvme-encrypted-2-replicas.yaml
   - storageClasses/nvme-encrypted-3-replicas.yaml
-  - longhorn-crypto.enc.yaml
+  - recurringJobs/backup-24h.yaml
+  - recurringJobs/snapshot-6h.yaml
+
+generators:
+  - ksops.yaml

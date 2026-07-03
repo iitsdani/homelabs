@@ -1,0 +1,32 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ingress-nginx
+  namespace: argo-system
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  sources:
+    - repoURL: https://kubernetes.github.io/ingress-nginx
+      chart: ingress-nginx
+      targetRevision: 4.15.1
+      helm:
+        releaseName: ingress-nginx
+        valueFiles:
+          - $values/kube/home/networking/ingress-nginx/values.yaml
+    - repoURL: git@github.com:iitsdani/homelabs.git
+      targetRevision: refs/heads/main
+      ref: values
+  destination:
+    name: in-cluster
+    namespace: networking
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - ServerSideApply=true
+      - ApplyOutOfSyncOnly=true
+      - SkipDryRunOnMissingResource=true

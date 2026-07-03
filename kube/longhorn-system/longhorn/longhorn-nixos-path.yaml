@@ -1,9 +1,0 @@
----
-# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/v1.34.2/configmap-v1.json
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: longhorn-nixos-path
-  namespace: longhorn-system
-data:
-  PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/run/wrappers/bin:/nix/var/nix/profiles/default/bin:/run/current-system/sw/bin

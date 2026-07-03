@@ -1,0 +1,12 @@
+---
+# yaml-language-server: $schema=https://www.schemastore.org/kustomization.json
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - application.yaml
+  - ar3s3ru.dev-acme.yaml
+  - cianfr.one-acme.yaml
+
+generators:
+  - ksops.yaml

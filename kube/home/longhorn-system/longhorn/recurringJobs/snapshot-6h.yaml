@@ -1,0 +1,15 @@
+---
+apiVersion: longhorn.io/v1beta2
+kind: RecurringJob
+metadata:
+  name: snapshot-6h
+  namespace: longhorn-system
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  cron: "0 */6 * * *"
+  task: "snapshot"
+  groups:
+    - default
+  retain: 4
+  concurrency: 2

@@ -1,0 +1,6 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/v1.34.2/namespace-v1.json
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: argo-system

@@ -1,7 +1,7 @@
 {
   imports = [
     ./server.nix
-    ./fluxcd.nix
+    ./argocd.nix
     ./tailscale.nix
   ];
 

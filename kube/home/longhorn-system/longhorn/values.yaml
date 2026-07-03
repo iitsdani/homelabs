@@ -1,0 +1,40 @@
+---
+longhornUI:
+  replicas: 2
+
+metrics:
+  serviceMonitor:
+    enabled: true
+
+ingress:
+  enabled: true
+  ingressClassName: tailscale
+  host: longhorn
+  tls: true
+
+defaultSettings:
+  v1DataEngine: false
+  v2DataEngine: true
+  storageMinimalAvailablePercentage: "10"
+  allowCollectingLonghornUsageMetrics: false
+  autoCleanupSnapshotWhenDeleteBackup: true
+  autoCleanupSnapshotAfterOnDemandBackupCompleted: true
+  snapshotDataIntegrityImmediateCheckAfterSnapshotCreation: true
+  # Automatically detach volumes that are attached manually when node is cordoned.
+  detachManuallyAttachedVolumesWhenCordoned: true
+  # Detect and move stale RWX volumes quickly to other nodes.
+  rwxVolumeFastFailover: true
+  # Longhorn will force delete StatefulSet/Deployment terminating pods
+  # on nodes that are down to release Longhorn volumes so that Kubernetes
+  # can spin up replacement pods.
+  nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod
+  replicaSoftAntiAffinity: false
+  replicaAutoBalance: best-effort
+  lockedVolumeAutoCleanup: true
+  freezeFilesystemForSnapshot: true
+  concurrentAutomaticEngineUpgradePerNodeLimit: 3
+  replicaReplenishmentWaitInterval: 60
+
+defaultBackupStore:
+  backupTarget: nfs://truenas.home.arpa:/mnt/zpool-nl-01/longhorn-backups-v2?nfsOptions=soft,timeo=330,retrans=3
+  pollInterval: 300 # 5 minutes
