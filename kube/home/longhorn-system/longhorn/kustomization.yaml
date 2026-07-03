@@ -1,16 +1,15 @@
 ---
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: &namespace longhorn-system
 
 resources:
   - helmrepository.yaml
   - helmrelease.yaml
   - longhorn-nixos-path.yaml
+  - longhorn-add-nixos-path.yaml
+  - storageClasses/nvme-1-replicas.yaml
   - storageClasses/nvme-2-replicas.yaml
   - storageClasses/nvme-3-replicas.yaml
   - storageClasses/nvme-encrypted-2-replicas.yaml
   - storageClasses/nvme-encrypted-3-replicas.yaml
-  - recurringJobs/backup-24h.yaml
-  - recurringJobs/snapshot-6h.yaml
   - longhorn-crypto.enc.yaml

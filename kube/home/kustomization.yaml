@@ -5,5 +5,6 @@ kind: Kustomization
 resources:
   - kyverno-system/flux-kustomization.yaml
   - longhorn-system/flux-kustomization.yaml
+  - longhorn-system/flux-kustomization-policies.yaml
   - networking/flux-kustomization.yaml
 

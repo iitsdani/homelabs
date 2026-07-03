@@ -36,7 +36,7 @@ spec:
     ingress:
       enabled: true
       ingressClassName: tailscale
-      host: nl-longhorn
+      host: longhorn
       tls: true
     defaultSettings:
       v1DataEngine: false
@@ -45,14 +45,14 @@ spec:
       allowCollectingLonghornUsageMetrics: false
       autoCleanupSnapshotWhenDeleteBackup: true
       autoCleanupSnapshotAfterOnDemandBackupCompleted: true
-      snapshotDataIntegrityImmediateCheckAfterSnapshotCreation: enabled
+      snapshotDataIntegrityImmediateCheckAfterSnapshotCreation: true
       detachManuallyAttachedVolumesWhenCordoned: true
       rwxVolumeFastFailover: true
       nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod
       replicaSoftAntiAffinity: false
       replicaAutoBalance: best-effort
       lockedVolumeAutoCleanup: true
-      freezeFilesystemForSnapshot: enabled
+      freezeFilesystemForSnapshot: true
       concurrentAutomaticEngineUpgradePerNodeLimit: 3
       replicaReplenishmentWaitInterval: 60
     defaultBackupStore:
