@@ -2,9 +2,9 @@
 # yaml-language-server: $schema=https://www.schemastore.org/kustomization.json
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: &namespace home-automation
 
 resources:
+  - application.yaml
   - persistentvolumeclaims.yaml
 
 generators:
@@ -12,13 +12,13 @@ generators:
 
 configMapGenerator:
   - name: home-assistant-configuration
-    namespace: *namespace
+    namespace: home-automation
     files:
       - ./config/configuration.yaml
       - ./config/scenes.yaml
       - ./config/scripts.yaml
   - name: home-assistant-automations
-    namespace: *namespace
+    namespace: home-automation
     files:
       - ./automations/home.yaml
       - ./automations/kitchen.yaml
@@ -26,10 +26,5 @@ configMapGenerator:
       - ./automations/toilet.yaml
       - ./automations/vacuum.yaml
 
-helmCharts:
-  - name: app-template
-    repo: https://bjw-s-labs.github.io/helm-charts
-    version: 5.0.1
-    releaseName: home-assistant
-    namespace: *namespace
-    valuesFile: values.yaml
+generatorOptions:
+  disableNameSuffixHash: true
