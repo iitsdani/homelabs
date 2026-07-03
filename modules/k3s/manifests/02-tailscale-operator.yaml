@@ -15,4 +15,3 @@ spec:
       hostname: "home-k8s"
     apiServerProxyConfig:
       mode: "true"
-
