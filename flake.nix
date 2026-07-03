@@ -59,6 +59,7 @@
               kustomize
               cilium-cli # Cilium CLI
               hubble
+              fluxcd
             ] ++
             # Go packages for tool development.
             [

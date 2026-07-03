@@ -12,6 +12,7 @@ spec:
   targetNamespace: networking
   valuesContent: |-
     operatorConfig:
-      hostname: "nl-k8s"
+      hostname: "home-k8s"
     apiServerProxyConfig:
       mode: "true"
+
