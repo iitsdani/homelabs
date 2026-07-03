@@ -10,17 +10,45 @@ metadata:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
-  sources:
-    - repoURL: https://charts.longhorn.io
-      chart: longhorn
-      targetRevision: 1.11.3
-      helm:
-        releaseName: longhorn
-        valueFiles:
-          - $values/kube/home/longhorn-system/longhorn/values.yaml
-    - repoURL: git@github.com:iitsdani/homelabs.git
-      targetRevision: refs/heads/main
-      ref: values
+  source:
+    repoURL: https://charts.longhorn.io
+    chart: longhorn
+    targetRevision: 1.11.3
+    helm:
+      releaseName: longhorn
+      valuesObject:
+        preUpgradeChecker:
+          jobEnabled: false
+        longhornUI:
+          replicas: 2
+        metrics:
+          serviceMonitor:
+            enabled: true
+        ingress:
+          enabled: true
+          ingressClassName: tailscale
+          host: longhorn
+          tls: true
+        defaultSettings:
+          v1DataEngine: false
+          v2DataEngine: true
+          storageMinimalAvailablePercentage: "10"
+          allowCollectingLonghornUsageMetrics: false
+          autoCleanupSnapshotWhenDeleteBackup: true
+          autoCleanupSnapshotAfterOnDemandBackupCompleted: true
+          snapshotDataIntegrityImmediateCheckAfterSnapshotCreation: true
+          detachManuallyAttachedVolumesWhenCordoned: true
+          rwxVolumeFastFailover: true
+          nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod
+          replicaSoftAntiAffinity: false
+          replicaAutoBalance: best-effort
+          lockedVolumeAutoCleanup: true
+          freezeFilesystemForSnapshot: true
+          concurrentAutomaticEngineUpgradePerNodeLimit: 3
+          replicaReplenishmentWaitInterval: 60
+        defaultBackupStore:
+          backupTarget: nfs://truenas.home.arpa:/mnt/zpool-nl-01/longhorn-backups-v2?nfsOptions=soft,timeo=330,retrans=3
+          pollInterval: 300
   destination:
     name: in-cluster
     namespace: longhorn-system
