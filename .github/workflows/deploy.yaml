@@ -33,7 +33,7 @@ jobs:
             -H "Content-Type: application/json" \
             -H "X-GitHub-Event: push" \
             -d "$GITHUB_WEBHOOK_PAYLOAD" \
-            https://nl-argocd.tail2ff90.ts.net/api/webhook
+            https://argocd.tail2ff90.ts.net/api/webhook
 
   changes:
     name: Check changes
