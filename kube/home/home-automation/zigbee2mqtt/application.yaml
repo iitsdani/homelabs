@@ -1,0 +1,70 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: zigbee2mqtt
+  namespace: argo-system
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://charts.zigbee2mqtt.io
+    chart: zigbee2mqtt
+    targetRevision: 2.10.1
+    helm:
+      releaseName: zigbee2mqtt
+      valuesObject:
+        ingress:
+          enabled: true
+          ingressClassName: tailscale
+          hosts:
+            - host: z2m
+              paths:
+                - path: /
+                  pathType: Prefix
+          tls:
+            - hosts:
+                - z2m
+
+        service:
+          type: ClusterIP
+
+        statefulset:
+          resources:
+            requests:
+              akri.sh/sonoff-zigbee-antenna: "1"
+            limits:
+              akri.sh/sonoff-zigbee-antenna: "1"
+          storage:
+            enabled: true
+            storageClassName: longhorn-nvme-3-replicas
+            size: 200M
+
+        zigbee2mqtt:
+          permit_join: true
+          mqtt:
+            server: mqtt://mosquitto.home-automation.svc.cluster.local:1883
+            version: 5
+          serial:
+            port: /dev/ttyUSB0
+            adapter: ezsp
+          availability:
+            enabled: true
+            active:
+              timeout: 2
+            passive:
+              timeout: 1500
+  destination:
+    name: in-cluster
+    namespace: home-automation
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - ServerSideApply=true
+      - ApplyOutOfSyncOnly=true
+      - SkipDryRunOnMissingResource=true
