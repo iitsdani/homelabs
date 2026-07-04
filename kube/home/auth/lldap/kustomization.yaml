@@ -6,8 +6,9 @@ kind: Kustomization
 resources:
   # Temporarily disabled until restored CNPG volume is rebound and cluster is healthy.
   # - application.yaml
-  # - lldap-cnpg-cluster.yaml
-  - lldap-cnpg-restore-source.yaml
+  # Manually applied while VolumeSnapshot is excluded from ArgoCD resources.
+  # - lldap-cnpg-restore-source.yaml
+  - lldap-cnpg-cluster.yaml
   - lldap-groups.yaml
 
 generators:

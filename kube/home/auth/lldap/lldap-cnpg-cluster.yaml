@@ -20,9 +20,12 @@ spec:
     name: lldap-cnpg-postgres
 
   bootstrap:
-    initdb:
-      database: main
-      owner: postgres
+    recovery:
+      volumeSnapshots:
+        storage:
+          name: lldap-cnpg-restore-source
+          kind: VolumeSnapshot
+          apiGroup: snapshot.storage.k8s.io
 
   managed:
     services:
