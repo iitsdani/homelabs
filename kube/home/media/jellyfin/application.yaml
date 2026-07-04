@@ -1,0 +1,105 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: &name jellyfin
+  namespace: argo-system
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://jellyfin.github.io/jellyfin-helm
+    chart: jellyfin
+    targetRevision: 3.2.0
+    helm:
+      releaseName: *name
+      valuesObject:
+        image:
+          repository: docker.io/jellyfin/jellyfin
+          tag: 10.11.10@sha256:f66273e014b307e4ac46778845ebc1e9ee24b2e57c1fc17d5ec5ac3015649bfa
+
+        replicaCount: 1
+        deploymentStrategy:
+          type: Recreate # Using RWO backing volume.
+
+        podSecurityContext:
+          fsGroup: 1000
+          fsGroupChangePolicy: OnRootMismatch
+          runAsGroup: 1000
+          runAsUser: 1000
+
+        podAnnotations:
+          reloader.stakater.com/auto: "true"
+
+        affinity:
+          nodeAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+              - weight: 100
+                preference:
+                  matchExpressions:
+                    - key: cianfr.one/gpu.transcoding.speed
+                      operator: In
+                      values:
+                        - fast
+              - weight: 50
+                preference:
+                  matchExpressions:
+                    - key: cianfr.one/gpu.transcoding.speed
+                      operator: In
+                      values:
+                        - medium
+
+        ingress:
+          enabled: true
+          className: nginx
+          annotations:
+            cert-manager.io/cluster-issuer: cianfr.one-acme
+            external-dns.alpha.kubernetes.io/hostname: &host media.cianfr.one
+            external-dns.alpha.kubernetes.io/target: in.it.cianfr.one
+          hosts:
+            - host: *host
+              paths:
+                - path: /
+                  pathType: Prefix
+          tls:
+            - hosts: [*host]
+              secretName: jellyfin-tls
+
+        resources:
+          limits:
+            gpu.intel.com/i915: "1"
+          requests:
+            gpu.intel.com/i915: "1"
+
+        volumes:
+          - name: media-data
+            persistentVolumeClaim:
+              claimName: media-data-v4
+          - name: media-videos
+            persistentVolumeClaim:
+              claimName: media-videos-v1
+
+        volumeMounts:
+          - name: media-data
+            mountPath: /data
+          - name: media-videos
+            mountPath: /videos
+
+        persistence:
+          config:
+            enabled: true
+            existingClaim: jellyfin-config-v2
+          media:
+            enabled: false # Managed separately and manually.
+  destination:
+    name: in-cluster
+    namespace: media
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - ServerSideApply=true
+      - ApplyOutOfSyncOnly=true
+      - SkipDryRunOnMissingResource=true
