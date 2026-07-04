@@ -21,6 +21,8 @@ spec:
 
   bootstrap:
     recovery:
+      database: main
+      owner: postgres
       volumeSnapshots:
         storage:
           name: lldap-cnpg-restore-source

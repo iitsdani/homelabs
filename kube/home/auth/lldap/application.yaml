@@ -67,7 +67,7 @@ spec:
             type: job
             annotations:
               reloader.stakater.com/auto: "true"
-              argocd.argoproj.io/hook: PreSync
+              argocd.argoproj.io/hook: PostSync
               argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
             containers:
               main:

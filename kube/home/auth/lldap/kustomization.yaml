@@ -4,10 +4,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  # Temporarily disabled until restored CNPG volume is rebound and cluster is healthy.
-  # - application.yaml
-  # Manually applied while VolumeSnapshot is excluded from ArgoCD resources.
-  # - lldap-cnpg-restore-source.yaml
+  - application.yaml
   - lldap-cnpg-cluster.yaml
   - lldap-groups.yaml
 
