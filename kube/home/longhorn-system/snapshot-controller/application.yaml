@@ -1,0 +1,55 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: snapshot-controller
+  namespace: argo-system
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  ignoreDifferences:
+    - group: snapshot.storage.k8s.io
+      kind: VolumeSnapshotClass
+      jsonPointers:
+        - /metadata/namespace
+  source:
+    repoURL: https://piraeus.io/helm-charts/
+    chart: snapshot-controller
+    targetRevision: 5.1.1
+    helm:
+      releaseName: snapshot-controller
+      valuesObject:
+        installCRDs: true
+        controller:
+          enabled: true
+        webhook:
+          enabled: true
+          tls:
+            autogenerate: false
+            certManagerIssuerRef:
+              name: snapshot-controller-selfsigned
+              kind: Issuer
+        volumeSnapshotClasses:
+          - name: longhorn
+            driver: driver.longhorn.io
+            deletionPolicy: Delete
+          - name: longhorn-backup
+            driver: driver.longhorn.io
+            deletionPolicy: Delete
+            parameters:
+              type: bak
+              backupMode: full
+  destination:
+    name: in-cluster
+    namespace: longhorn-system
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - ServerSideApply=true
+      - ApplyOutOfSyncOnly=true
+      - SkipDryRunOnMissingResource=true
