@@ -1,0 +1,92 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: sonarr
+  namespace: argo-system
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://bjw-s-labs.github.io/helm-charts
+    chart: app-template
+    targetRevision: 5.0.1
+    helm:
+      releaseName: sonarr
+      valuesObject:
+        defaultPodOptions:
+          securityContext:
+            fsGroup: 1000
+            fsGroupChangePolicy: OnRootMismatch
+            runAsGroup: 1000
+            runAsUser: 1000
+
+        service:
+          main:
+            type: ClusterIP
+            controller: main
+            ports:
+              http:
+                port: 8989
+
+        ingress:
+          tailscale:
+            className: tailscale
+            enabled: true
+            hosts:
+              - host: sonarr
+                paths:
+                  - path: /
+                    pathType: Prefix
+                    service:
+                      identifier: main
+                      port: http
+            tls:
+              - hosts: [sonarr]
+
+        controllers:
+          main:
+            type: deployment
+            replicas: 1
+            strategy: Recreate
+            annotations:
+              reloader.stakater.com/auto: "true"
+            containers:
+              main:
+                env:
+                  PGID: 1000
+                  PGUID: 1000
+                  TZ: Europe/Amsterdam
+                image:
+                  repository: ghcr.io/linuxserver/sonarr
+                  tag: 4.0.17@sha256:60f3b6b5c7647ba2bafd81163acfe34b11117b9b834ebd7fbcc3e5f1b309c7ef
+                probes:
+                  liveness: { enabled: false }
+                  readiness: { enabled: false }
+                  startup: { enabled: true }
+
+        persistence:
+          config:
+            enabled: true
+            existingClaim: sonarr-config-v2
+            globalMounts: [{ path: /config }]
+            type: persistentVolumeClaim
+          media:
+            enabled: true
+            existingClaim: media-data-v4
+            globalMounts: [{ path: /data }]
+            type: persistentVolumeClaim
+  destination:
+    name: in-cluster
+    namespace: media
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - ServerSideApply=true
+      - ApplyOutOfSyncOnly=true
+      - SkipDryRunOnMissingResource=true
