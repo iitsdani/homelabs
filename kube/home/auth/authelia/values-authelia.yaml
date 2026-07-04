@@ -198,7 +198,7 @@ configMap:
           consent_mode: implicit
           authorization_policy: "two_factor"
           redirect_uris:
-            - https://nl-home.tail2ff90.ts.net/auth/oidc/callback
+            - https://hass.tail2ff90.ts.net/auth/oidc/callback
           scopes:
             - "openid"
             - "profile"
