@@ -2,12 +2,12 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/v1.34.2/configmap-v1.json
 #
 # Grafana dashboard for MKTXP metrics, auto-loaded into Grafana by the
-# `sidecar.dashboards` picker configured in kube/telemetry/grafana/values.yaml
+# `sidecar.dashboards` picker configured in kube/home/telemetry/grafana/application.yaml
 # (searchNamespace: ALL, default label `grafana_dashboard`).
 #
 # Source: https://grafana.com/grafana/dashboards/13679 (official author-maintained).
 # This copy has `${DS_PROMETHEUS}` rewritten to datasource uid `vmprometheus`
-# (see kube/telemetry/grafana/values.yaml -> datasources -> VMPrometheus).
+# (see kube/home/telemetry/grafana/application.yaml -> datasources -> VMPrometheus).
 apiVersion: v1
 kind: ConfigMap
 metadata:

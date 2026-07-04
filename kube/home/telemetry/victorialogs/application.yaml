@@ -1,0 +1,70 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: victorialogs
+  namespace: argo-system
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://victoriametrics.github.io/helm-charts/
+    chart: victoria-logs-single
+    targetRevision: 0.12.5
+    helm:
+      releaseName: victorialogs
+      skipCrds: false
+      valuesObject:
+        server:
+          enabled: true
+          image:
+            repository: docker.io/victoriametrics/victoria-logs
+            pullPolicy: IfNotPresent
+          retentionPeriod: 1
+          persistentVolume:
+            enabled: true
+            existingClaim: victorialogs-data
+          extraArgs:
+            syslog.listenAddr.tcp: ":9514"
+          resources:
+            requests:
+              cpu: 10m
+              memory: 512Mi
+            limits:
+              cpu: 3000m
+              memory: 4Gi
+          securityContext:
+            enabled: true
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: [ALL] }
+          podSecurityContext:
+            enabled: true
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            fsGroup: 1000
+            fsGroupChangePolicy: Always
+            seccompProfile: { type: RuntimeDefault }
+          statefulSet:
+            enabled: false
+          serviceMonitor:
+            enabled: true
+          affinity: {}
+
+        vector:
+          enabled: true
+  destination:
+    name: in-cluster
+    namespace: telemetry
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - ServerSideApply=true
+      - ApplyOutOfSyncOnly=true
+      - SkipDryRunOnMissingResource=true

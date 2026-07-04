@@ -1,0 +1,87 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: victoriametrics
+  namespace: argo-system
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://victoriametrics.github.io/helm-charts/
+    chart: victoria-metrics-k8s-stack
+    targetRevision: 0.81.0
+    helm:
+      releaseName: victoriametrics
+      skipCrds: false
+      valuesObject:
+        argocdReleaseOverride: victoriametrics
+        fullnameOverride: vm
+
+        global:
+          cluster:
+            dnsDomain: cluster.local
+
+        victoria-metrics-operator:
+          admissionWebhooks:
+            certManager:
+              enabled: true
+
+        alertmanager:
+          spec:
+            replicaCount: 1
+
+        vmsingle:
+          enabled: true
+          spec:
+            retentionPeriod: 8w
+            storage:
+              storageClassName: longhorn-nvme-3-replicas
+              accessModes:
+                - ReadWriteOnce
+              resources:
+                requests:
+                  storage: 40Gi
+
+        vmcluster:
+          enabled: false
+
+        kubelet:
+          vmScrape:
+            spec:
+              metricRelabelConfigs:
+                - action: labeldrop
+                  regex: (uid)
+                - action: labeldrop
+                  regex: (id|name)
+                - action: drop
+                  source_labels: [__name__]
+                  regex: (rest_client_request_duration_seconds_bucket|rest_client_request_duration_seconds_sum|rest_client_request_duration_seconds_count)
+                - action: labeldrop
+                  regex: (feature_node_kubernetes_io_.+|beta_kubernetes_io_.+)
+
+        defaultDashboards:
+          enabled: true
+          annotations:
+            argocd.argoproj.io/sync-options: ServerSideApply=true
+
+        prometheus-node-exporter:
+          enabled: true
+
+        grafana:
+          enabled: false
+          forceDeployDatasource: true
+  destination:
+    name: in-cluster
+    namespace: telemetry
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - ServerSideApply=true
+      - ApplyOutOfSyncOnly=true
+      - SkipDryRunOnMissingResource=true

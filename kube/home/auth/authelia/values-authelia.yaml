@@ -272,7 +272,7 @@ configMap:
           require_pkce: true
           pkce_challenge_method: S256
           redirect_uris:
-            - https://nl-grafana.tail2ff90.ts.net/login/generic_oauth
+            - https://grafana.tail2ff90.ts.net/login/generic_oauth
           scopes:
             - openid
             - profile

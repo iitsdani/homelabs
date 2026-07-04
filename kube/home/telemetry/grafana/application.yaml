@@ -1,0 +1,117 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: grafana
+  namespace: argo-system
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://grafana.github.io/helm-charts
+    chart: grafana
+    targetRevision: 10.5.15
+    helm:
+      releaseName: grafana
+      valuesObject:
+        envFromSecret: grafana-secrets
+
+        ingress:
+          enabled: true
+          ingressClassName: tailscale
+          hosts: [&host grafana]
+          tls:
+            - hosts: [*host]
+
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        plugins:
+          - victoriametrics-metrics-datasource
+          - victoriametrics-logs-datasource
+
+        sidecar:
+          dashboards:
+            enabled: true
+            searchNamespace: ALL
+          alerts:
+            enabled: true
+            searchNamespace: ALL
+
+        datasources:
+          datasources.yaml:
+            apiVersion: 1
+            datasources:
+              - name: VMPrometheus
+                type: prometheus
+                uid: vmprometheus
+                url: http://vmsingle-vm.telemetry.svc.cluster.local:8428
+                access: proxy
+                isDefault: true
+                editable: false
+                basicAuth: false
+                jsonData:
+                  prometheusType: Prometheus
+                  prometheusVersion: 2.24.0
+              - name: VictoriaLogs
+                type: victoriametrics-logs-datasource
+                uid: victorialogs
+                access: proxy
+                url: http://victorialogs-victoria-logs-single-server.telemetry.svc.cluster.local:9428
+                editable: false
+                basicAuth: false
+              - name: AlertManager
+                type: alertmanager
+                uid: alertmanager
+                url: http://vmalertmanager-vm.telemetry.svc.cluster.local:9093
+                access: proxy
+                editable: false
+                basicAuth: false
+
+        dashboardProviders:
+          dashboardproviders.yaml:
+            apiVersion: 1
+            providers:
+              - name: default
+                orgId: 1
+                type: file
+                disableDeletion: false
+                editable: false
+                options:
+                  path: /var/lib/grafana/dashboards/default
+
+        grafana.ini:
+          server:
+            root_url: https://grafana.tail2ff90.ts.net
+          auth:
+            disable_login_form: false
+          auth.generic_oauth:
+            enabled: true
+            auto_login: false
+            name: Authelia
+            icon: signin
+            client_id: grafana
+            scopes: openid profile email groups
+            empty_scopes: false
+            auth_url: https://idp.cianfr.one/api/oidc/authorization
+            token_url: https://idp.cianfr.one/api/oidc/token
+            api_url: https://idp.cianfr.one/api/oidc/userinfo
+            login_attribute_path: preferred_username
+            groups_attribute_path: groups
+            name_attribute_path: name
+            use_pkce: true
+            role_attribute_path: contains(groups[*], 'admin') && 'Admin' || 'Editor'
+  destination:
+    name: in-cluster
+    namespace: telemetry
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - ServerSideApply=true
+      - ApplyOutOfSyncOnly=true
+      - SkipDryRunOnMissingResource=true
