@@ -2,24 +2,19 @@
 # yaml-language-server: $schema=https://www.schemastore.org/kustomization.json
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: &namespace opencloud-system
 
 resources:
+  - application.yaml
   - opencloud-data-v3.yaml
 
 generators:
   - ksops.yaml
+
+generatorOptions:
+  disableNameSuffixHash: true
 
 configMapGenerator:
   - name: opencloud-config
     files:
       - csp.yaml
       - proxy.yaml
-
-helmCharts:
-  - name: app-template
-    repo: https://bjw-s-labs.github.io/helm-charts
-    version: 5.0.1
-    releaseName: opencloud
-    namespace: *namespace
-    valuesFile: values.yaml
