@@ -10,17 +10,32 @@ metadata:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
-  sources:
-    - repoURL: https://ot-container-kit.github.io/helm-charts
-      chart: redis
-      targetRevision: 0.16.9
-      helm:
-        releaseName: immich-redis
-        valueFiles:
-          - $values/kube/home/media/immich/values-redis.yaml
-    - repoURL: git@github.com:iitsdani/homelabs.git
-      targetRevision: main
-      ref: values
+  source:
+    repoURL: https://ot-container-kit.github.io/helm-charts
+    chart: redis
+    targetRevision: 0.16.9
+    helm:
+      releaseName: immich-redis
+      valuesObject:
+        storageSpec:
+          volumeClaimTemplate:
+            spec:
+              accessModes:
+                - ReadWriteOnce
+              storageClassName: longhorn-nvme-3-replicas
+              resources:
+                requests:
+                  storage: 200Mi
+
+        externalConfig:
+          enabled: true
+          data: ""
+
+        redisExporter:
+          enabled: true
+
+        serviceMonitor:
+          enabled: true
   destination:
     name: in-cluster
     namespace: media
