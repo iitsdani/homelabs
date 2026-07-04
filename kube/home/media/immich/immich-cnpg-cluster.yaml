@@ -20,10 +20,7 @@ spec:
     size: 5Gi
     storageClass: longhorn-nvme-3-replicas
 
-  # Enable superuser access with the secret you created
-  # enableSuperuserAccess: true
-  # superuserSecret:
-  #   name: immich-postgresql-postgres
+  enableSuperuserAccess: true
 
   bootstrap:
     initdb:

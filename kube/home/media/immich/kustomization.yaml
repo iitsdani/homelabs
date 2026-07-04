@@ -1,0 +1,15 @@
+---
+# yaml-language-server: $schema=https://www.schemastore.org/kustomization.json
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  # - application.yaml
+  - immich-library-v4.yaml
+  - immich-ml-cache-v3.yaml
+  - immich-cnpg-cluster.yaml
+  # - machine-learning-application.yaml
+  - redis-application.yaml
+
+generators:
+  - ksops.yaml

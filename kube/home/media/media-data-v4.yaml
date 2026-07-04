@@ -1,0 +1,34 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/v1.34.2/persistentvolume-v1.json
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: media-data-v4
+spec:
+  capacity:
+    storage: 5Ti
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: truenas.home.arpa
+    path: /mnt/pool0/media
+  mountOptions:
+    - nfsvers=4.1
+    - hard
+    - timeo=300
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/v1.34.2/persistentvolumeclaim-v1.json
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: media-data-v4
+  namespace: media
+spec:
+  storageClassName: ""
+  volumeName: media-data-v4
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Ti

@@ -5,3 +5,5 @@ kind: Kustomization
 
 resources:
   - namespace.yaml
+  - media-data-v4.yaml
+  - media-videos-v1.yaml

@@ -1,0 +1,51 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: immich-db-restore
+  namespace: media
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  backoffLimit: 2
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: restore
+          image: postgres:16.13-bookworm
+          env:
+            - name: PGHOST
+              value: immich-cnpg-cluster-rw.media.svc.cluster.local
+            - name: PGDATABASE
+              value: immich
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: immich-cnpg-cluster-superuser
+                  key: username
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: immich-cnpg-cluster-superuser
+                  key: password
+            - name: BACKUP_FILE
+              value: /backups/immich-db-backup-20260702T020000-v2.7.5-pg16.9.sql.gz
+          command:
+            - /bin/bash
+            - -ceu
+            - |
+              until pg_isready; do sleep 5; done
+
+              gzip -cd "${BACKUP_FILE}" \
+                | sed "s/SELECT pg_catalog.set_config('search_path', '', false);/SELECT pg_catalog.set_config('search_path', 'public, pg_catalog', true);/g" \
+                | psql --single-transaction --set ON_ERROR_STOP=on
+          volumeMounts:
+            - name: immich-library
+              mountPath: /backups
+              subPath: backups
+              readOnly: true
+      volumes:
+        - name: immich-library
+          persistentVolumeClaim:
+            claimName: immich-library-v4

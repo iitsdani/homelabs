@@ -1,0 +1,34 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/v1.34.2/persistentvolume-v1.json
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: media-videos-v1
+spec:
+  capacity:
+    storage: 500Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: truenas.home.arpa
+    path: /mnt/pool0/gallery/raws
+  mountOptions:
+    - nfsvers=4.1
+    - hard
+    - timeo=300
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/v1.34.2/persistentvolumeclaim-v1.json
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: media-videos-v1
+  namespace: media
+spec:
+  storageClassName: ""
+  volumeName: media-videos-v1
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 500Gi
