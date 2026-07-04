@@ -19,15 +19,16 @@ spec:
   superuserSecret:
     name: lldap-cnpg-postgres
 
-  bootstrap:
-    recovery:
-      database: main
-      owner: postgres
-      volumeSnapshots:
-        storage:
-          name: lldap-cnpg-restore-source
-          kind: VolumeSnapshot
-          apiGroup: snapshot.storage.k8s.io
+  # NOTE: used for cluster recover from previous snapshot/longhorn backup.
+  # bootstrap:
+  #   recovery:
+  #     database: main
+  #     owner: postgres
+  #     volumeSnapshots:
+  #       storage:
+  #         name: lldap-cnpg-restore-source
+  #         kind: VolumeSnapshot
+  #         apiGroup: snapshot.storage.k8s.io
 
   managed:
     services:

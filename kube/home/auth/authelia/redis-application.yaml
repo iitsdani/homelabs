@@ -1,0 +1,34 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: authelia-redis
+  namespace: argo-system
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  sources:
+    - repoURL: https://ot-container-kit.github.io/helm-charts
+      chart: redis
+      targetRevision: 0.16.9
+      helm:
+        releaseName: authelia-redis
+        valueFiles:
+          - $values/kube/home/auth/authelia/values-redis.yaml
+    - repoURL: git@github.com:iitsdani/homelabs.git
+      targetRevision: main
+      ref: values
+  destination:
+    name: in-cluster
+    namespace: auth
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - ServerSideApply=true
+      - ApplyOutOfSyncOnly=true
+      - SkipDryRunOnMissingResource=true

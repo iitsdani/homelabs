@@ -11,6 +11,7 @@ contexts:
       user: tailscale-auth
 kind: Config
 preferences: {}
+current-context: home
 users:
   - name: tailscale-auth
     user:

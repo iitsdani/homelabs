@@ -19,9 +19,14 @@ spec:
     storageClass: longhorn-nvme-3-replicas
 
   bootstrap:
-    initdb:
+    recovery:
       database: main
       owner: authelia
+      volumeSnapshots:
+        storage:
+          name: authelia-cnpg-restore-source
+          kind: VolumeSnapshot
+          apiGroup: snapshot.storage.k8s.io
 
   managed:
     services:
