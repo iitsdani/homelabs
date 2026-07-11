@@ -56,28 +56,30 @@ spec:
                 port: 8082
                 primary: false
 
-        ingress:
+        route:
           main:
             enabled: true
-            className: nginx
+            kind: HTTPRoute
             annotations:
-              cert-manager.io/cluster-issuer: cianfr.one-acme
-              external-dns.alpha.kubernetes.io/hostname: &host photos.cianfr.one
-              external-dns.alpha.kubernetes.io/target: in.it.cianfr.one
-              nginx.ingress.kubernetes.io/proxy-body-size: "0"
-              nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
-              nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
-            hosts:
-              - host: *host
-                paths:
-                  - path: /
-                    pathType: Prefix
-                    service:
-                      identifier: main
-                      port: http
-            tls:
-              - hosts: [*host]
-                secretName: immich-server-tls
+              external-dns.alpha.kubernetes.io/hostname: photos.cianfr.one
+              external-dns.alpha.kubernetes.io/target: gw.it.cianfr.one
+            hostnames:
+              - photos.cianfr.one
+            parentRefs:
+              - name: external-gw
+                namespace: networking
+                sectionName: https
+            rules:
+              - matches:
+                  - path:
+                      type: PathPrefix
+                      value: "/"
+                backendRefs:
+                  - identifier: main
+                    port: http
+                timeouts:
+                  request: 600s
+                  backendRequest: 600s
 
         controllers:
           main:

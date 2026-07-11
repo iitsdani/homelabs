@@ -5,4 +5,5 @@ kind: Kustomization
 
 resources:
   - application.yaml
+  - route.yaml
   - persistentvolumeclaims.yaml

@@ -51,7 +51,7 @@ Chosen option: **Full Cilium stack (Option 3)**. The migration is split into six
 | LB advertisement | MetalLB FRR (8 iBGP sessions) | Cilium BGP Control Plane (8 iBGP sessions) |
 | LB IPAM | MetalLB `IPAddressPool` | Cilium `CiliumLoadBalancerIPPool` |
 | Observability | None | Hubble Relay + UI (Tailscale ingress) |
-| Ingress | ingress-nginx only | ingress-nginx + Cilium Gateway API (hybrid) |
+| Ingress | ingress-nginx only | Cilium Gateway API (sole external ingress) |
 | Network policy | None | CiliumNetworkPolicy (available, opt-in) |
 | Pod encryption | None | None (deferred) |
 
@@ -110,9 +110,9 @@ Generic, no `nl-` prefix (cluster identity is implicit):
 - `CiliumBGPAdvertisement` → `lb-services-v4`, `lb-services-v6`
 - `CiliumLoadBalancerIPPool` → `lb-pool`
 
-### Gateway API — hybrid, parallel
+### Gateway API — now sole ingress path
 
-Cilium Gateway API is **enabled** but not made the cluster default. Existing `Ingress` resources continue to use `ingress-nginx`. New applications may opt in to `HTTPRoute` on the `cilium` `GatewayClass`. `external-dns` sources are extended to include `gateway-httproute` so Gateway-based apps receive DNS records.
+Cilium Gateway API is **enabled** and is the sole ingress controller for external traffic. All `Ingress` resources previously using `ingress-nginx` have been migrated to `HTTPRoute` on the `cilium` `GatewayClass` (see [ADR-005](ADR-005-gateway-api-migration.md)). `external-dns` sources include `gateway-httproute` so Gateway-based apps receive DNS records.
 
 ArgoCD's own ingress (`ingressClassName: tailscale`) remains on `Ingress` because Tailscale operator does not support Gateway API today.
 
@@ -120,7 +120,7 @@ ArgoCD's own ingress (`ingressClassName: tailscale`) remains on `Ingress` becaus
 
 - **Pod-to-pod encryption** (WireGuard or IPsec) — ADR-006 candidate.
 - **Cilium mTLS / SPIFFE** (beta) — ADR-007 candidate when GA.
-- **Gateway API migration of existing apps** — ADR-005 candidate.
+- **Gateway API migration of existing apps** — completed in [ADR-005](ADR-005-gateway-api-migration.md).
 - **CiliumNetworkPolicy adoption** — ADR-008 candidate; no policies in this change.
 - **Cilium native routing** (replacing VXLAN tunnel with BGP-advertised pod CIDRs) — follow-up once BGP is proven stable.
 

@@ -1,0 +1,35 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: external-gw
+  namespace: networking
+  annotations:
+    cert-manager.io/cluster-issuer: cianfr.one-acme
+spec:
+  gatewayClassName: cilium
+  addresses:
+    - type: IPAddress
+      value: "10.0.3.1"
+    - type: IPAddress
+      value: "fd00:cafe::3:1"
+    - type: IPAddress
+      value: "2a02:a469:9060:3::1"
+  listeners:
+    - name: http
+      protocol: HTTP
+      port: 80
+      allowedRoutes:
+        namespaces:
+          from: All
+    - name: https
+      protocol: HTTPS
+      port: 443
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: external-gateway-tls
+      allowedRoutes:
+        namespaces:
+          from: All
