@@ -50,6 +50,22 @@ spec:
                       values:
                         - medium
 
+        ingress:
+          enabled: true
+          className: nginx
+          annotations:
+            cert-manager.io/cluster-issuer: cianfr.one-acme
+            external-dns.alpha.kubernetes.io/hostname: &host media.cianfr.one
+            external-dns.alpha.kubernetes.io/target: in.it.cianfr.one
+          hosts:
+            - host: *host
+              paths:
+                - path: /
+                  pathType: Prefix
+          tls:
+            - hosts: [*host]
+              secretName: jellyfin-tls
+
         resources:
           limits:
             gpu.intel.com/i915: "1"

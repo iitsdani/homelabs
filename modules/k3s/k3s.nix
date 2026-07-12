@@ -40,6 +40,7 @@
     8095 # music-assistant hostNetwork
     8097 # chromecast
     8123 # home-assistant hostNetwork
+    8443 # ingress-nginx admission controller
     9100 # metallb
     9962 # cilium prometheus
     9963 # cilium operator prometheus

@@ -8,7 +8,7 @@
   # Kubernetes through K3S.
   services.k3s.role = "server";
   services.k3s.extraFlags = lib.mkBefore [
-    # Using Cilium Gateway API instead of Traefik.
+    # Using ingress-nginx and Cilium Gateway API instead.
     "--disable=traefik"
     # Using Cilium LB-IPAM + BGP Control Plane instead. Klipper-LB silently
     # masks MetalLB/Cilium allocation failures by binding host ports.

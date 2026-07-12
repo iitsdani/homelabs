@@ -1,0 +1,41 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ingress-nginx
+  namespace: argo-system
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://kubernetes.github.io/ingress-nginx
+    chart: ingress-nginx
+    targetRevision: 4.15.1
+    helm:
+      releaseName: ingress-nginx
+      valuesObject:
+        controller:
+          service:
+            externalTrafficPolicy: Local
+            ipFamilyPolicy: RequireDualStack
+            ipFamilies:
+              - IPv4
+              - IPv6
+            annotations:
+              io.cilium/lb-ipam-ips: "10.0.3.1,2a02:a469:9060:3::1"
+          metrics:
+            enabled: true
+            serviceMonitor:
+              enabled: true
+  destination:
+    name: in-cluster
+    namespace: networking
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - ServerSideApply=true
+      - ApplyOutOfSyncOnly=true
+      - SkipDryRunOnMissingResource=true
