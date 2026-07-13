@@ -66,6 +66,15 @@ spec:
             - hosts: [*host]
               secretName: jellyfin-tls
 
+        httpRoute:
+          enabled: true
+          parentRefs:
+            - name: external-gw
+              namespace: networking
+              sectionName: https
+          hostnames:
+            - *host
+
         resources:
           limits:
             gpu.intel.com/i915: "1"
