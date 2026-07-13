@@ -1,0 +1,39 @@
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: EnvoyProxy
+metadata:
+  name: external-gw
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  ipFamily: DualStack
+  shutdown:
+    minDrainDuration: 10s
+    drainTimeout: 60s
+  provider:
+    type: Kubernetes
+    kubernetes:
+      envoyDeployment:
+        replicas: 2
+        container:
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+        pod:
+          topologySpreadConstraints:
+            - maxSkew: 1
+              topologyKey: kubernetes.io/hostname
+              whenUnsatisfiable: DoNotSchedule
+              labelSelector:
+                matchLabels:
+                  gateway.envoyproxy.io/owning-gateway-name: external-gw
+      envoyService:
+        externalTrafficPolicy: Local
+        annotations:
+          io.cilium/lb-ipam-ips: "10.0.3.10,2a02:a469:9060:3::10"
+      envoyPDB:
+        minAvailable: 1

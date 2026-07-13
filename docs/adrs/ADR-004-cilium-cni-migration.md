@@ -1,5 +1,7 @@
 # Cilium CNI Migration with BGP Control Plane and Gateway API
 
+The Gateway API implementation decision in this ADR is superseded by [ADR-005](./ADR-005-envoy-gateway-migration.md). Cilium remains the chosen CNI, kube-proxy replacement, LB-IPAM implementation, and BGP control plane.
+
 ## Context and Problem Statement
 
 The `nl` cluster runs k3s-default **Flannel** (VXLAN backend) with **kube-proxy** (iptables-nft) and **MetalLB** (FRR mode) for LoadBalancer advertisement. This stack has proven fragile in the operational history of this cluster:

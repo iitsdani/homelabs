@@ -15,6 +15,7 @@ spec:
     kubeProxyReplacement: true
     k8sServiceHost: "10.0.1.1"
     k8sServicePort: 6443
+    rollOutCiliumPods: true
 
     ipam:
       mode: kubernetes
@@ -89,18 +90,14 @@ spec:
           trustCRDsExist: true
 
     envoy:
+      enabled: false
       prometheus:
         serviceMonitor:
           enabled: true
           trustCRDsExist: true
 
     gatewayAPI:
-      enabled: true
-      gatewayClass:
-        create: "true"
-      secretsNamespace:
-        name: "networking"
-        create: false
+      enabled: false
 
     prometheus:
       enabled: true
