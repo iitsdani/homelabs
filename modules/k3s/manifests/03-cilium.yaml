@@ -8,7 +8,7 @@ spec:
   bootstrap: true
   repo: https://helm.cilium.io/
   chart: cilium
-  version: "1.19.4"
+  version: "1.19.5"
   targetNamespace: networking
   createNamespace: true
   valuesContent: |-
