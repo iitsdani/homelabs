@@ -8,7 +8,7 @@
   # Kubernetes through K3S.
   services.k3s.role = "server";
   services.k3s.extraFlags = lib.mkBefore [
-    # Using ingress-nginx and Cilium Gateway API instead.
+    # Use Envoy Gateway for HTTP routing.
     "--disable=traefik"
     # Using Cilium LB-IPAM + BGP Control Plane instead. Klipper-LB silently
     # masks MetalLB/Cilium allocation failures by binding host ports.

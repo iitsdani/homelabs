@@ -1,8 +1,8 @@
 locals {
   port_forwards = {
-    "ingress-nginx" = {
-      ipv4             = "10.0.3.1"
-      ipv6_gua         = "2a02:a469:9060:3::1" # FIXME(ar3s3ru): Hardcoded KPN GUA, update on ISP move.
+    "envoy-gateway" = {
+      ipv4             = "10.0.3.10"
+      ipv6_gua         = "2a02:a469:9060:3::10" # FIXME(ar3s3ru): Hardcoded KPN GUA, update on ISP move.
       ports            = [80, 443]
       hairpin          = true
       guest_accessible = true

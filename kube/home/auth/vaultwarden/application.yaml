@@ -44,19 +44,6 @@ spec:
         strategy:
           type: Recreate
 
-        ingress:
-          enabled: true
-          className: nginx
-          annotations:
-            cert-manager.io/cluster-issuer: cianfr.one-acme
-            external-dns.alpha.kubernetes.io/hostname: vault.cianfr.one
-            external-dns.alpha.kubernetes.io/target: in.it.cianfr.one
-          host: vault.cianfr.one
-          tls:
-            - hosts:
-                - vault.cianfr.one
-              secretName: vaultwarden-cianfr.one-tls
-
         persistence:
           enabled: true
           existingClaim: vaultwarden-v2

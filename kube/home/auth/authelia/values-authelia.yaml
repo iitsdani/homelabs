@@ -2,12 +2,9 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/authelia/chartrepo/refs/heads/master/charts/authelia/values.schema.json
 ingress:
   enabled: true
-  className: "nginx"
   annotations:
-    cert-manager.io/cluster-issuer: cianfr.one-acme
     external-dns.alpha.kubernetes.io/hostname: idp.cianfr.one
     external-dns.alpha.kubernetes.io/target: in.it.cianfr.one
-  tls: { enabled: true }
   gatewayAPI:
     enabled: true
     hostnamesOverride:

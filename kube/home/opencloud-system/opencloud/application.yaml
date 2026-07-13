@@ -36,34 +36,14 @@ spec:
               grpc:
                 port: 9142
 
-        ingress:
-          main:
-            enabled: true
-            className: nginx
-            annotations:
-              cert-manager.io/cluster-issuer: cianfr.one-acme
-              external-dns.alpha.kubernetes.io/hostname: &host drive.cianfr.one
-              external-dns.alpha.kubernetes.io/target: in.it.cianfr.one
-              nginx.ingress.kubernetes.io/proxy-body-size: "0"
-              nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
-              nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
-            hosts:
-              - host: *host
-                paths:
-                  - path: /
-                    pathType: Prefix
-                    service:
-                      identifier: main
-                      port: http
-            tls:
-              - hosts: [*host]
-                secretName: opencloud-cianfr.one-tls
-
         route:
           main:
             enabled: true
+            annotations:
+              external-dns.alpha.kubernetes.io/hostname: drive.cianfr.one
+              external-dns.alpha.kubernetes.io/target: in.it.cianfr.one
             hostnames:
-              - *host
+              - drive.cianfr.one
             parentRefs:
               - name: external-gw
                 namespace: networking

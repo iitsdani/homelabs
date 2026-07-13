@@ -50,30 +50,17 @@ spec:
                       values:
                         - medium
 
-        ingress:
-          enabled: true
-          className: nginx
-          annotations:
-            cert-manager.io/cluster-issuer: cianfr.one-acme
-            external-dns.alpha.kubernetes.io/hostname: &host media.cianfr.one
-            external-dns.alpha.kubernetes.io/target: in.it.cianfr.one
-          hosts:
-            - host: *host
-              paths:
-                - path: /
-                  pathType: Prefix
-          tls:
-            - hosts: [*host]
-              secretName: jellyfin-tls
-
         httpRoute:
           enabled: true
+          annotations:
+            external-dns.alpha.kubernetes.io/hostname: media.cianfr.one
+            external-dns.alpha.kubernetes.io/target: in.it.cianfr.one
+          hostnames:
+            - media.cianfr.one
           parentRefs:
             - name: external-gw
               namespace: networking
               sectionName: https
-          hostnames:
-            - *host
 
         resources:
           limits:
