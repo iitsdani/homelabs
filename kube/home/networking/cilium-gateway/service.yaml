@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cilium-gateway-canary
+spec:
+  selector:
+    app.kubernetes.io/name: cilium-gateway-canary
+    app.kubernetes.io/instance: cilium-gateway-canary
+  ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: http
