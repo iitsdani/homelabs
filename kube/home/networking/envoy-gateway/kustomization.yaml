@@ -14,3 +14,5 @@ resources:
   - canary-deployment.yaml
   - canary-service.yaml
   - canary-route.yaml
+  - controller-metrics.yaml
+  - proxy-metrics.yaml

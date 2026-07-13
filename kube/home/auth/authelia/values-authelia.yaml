@@ -8,6 +8,14 @@ ingress:
     external-dns.alpha.kubernetes.io/hostname: idp.cianfr.one
     external-dns.alpha.kubernetes.io/target: in.it.cianfr.one
   tls: { enabled: true }
+  gatewayAPI:
+    enabled: true
+    hostnamesOverride:
+      - idp.cianfr.one
+    parentRefs:
+      - name: external-gw
+        namespace: networking
+        sectionName: https
   traefikCRD: { enabled: false, disableIngressRoute: true }
 
 pod:

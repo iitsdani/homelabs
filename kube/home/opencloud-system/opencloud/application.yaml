@@ -59,6 +59,27 @@ spec:
               - hosts: [*host]
                 secretName: opencloud-cianfr.one-tls
 
+        route:
+          main:
+            enabled: true
+            hostnames:
+              - *host
+            parentRefs:
+              - name: external-gw
+                namespace: networking
+                sectionName: https
+            rules:
+              - matches:
+                  - path:
+                      type: PathPrefix
+                      value: /
+                backendRefs:
+                  - identifier: main
+                    port: http
+                timeouts:
+                  request: 600s
+                  backendRequest: 600s
+
         configMaps:
           config:
             data:

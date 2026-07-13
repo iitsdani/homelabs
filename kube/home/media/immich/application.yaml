@@ -79,6 +79,26 @@ spec:
               - hosts: [*host]
                 secretName: immich-server-tls
 
+        route:
+          main:
+            enabled: true
+            hostnames:
+              - *host
+            parentRefs:
+              - name: external-gw
+                namespace: networking
+                sectionName: https
+            rules:
+              - matches:
+                  - path:
+                      type: PathPrefix
+                      value: /
+                backendRefs:
+                  - identifier: main
+                timeouts:
+                  request: 600s
+                  backendRequest: 600s
+
         controllers:
           main:
             type: deployment
