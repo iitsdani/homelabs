@@ -1,0 +1,12 @@
+---
+apiVersion: viaduct.ai/v1
+kind: ksops
+metadata:
+  name: renovate-credentials-generator
+  namespace: default
+  annotations:
+    config.kubernetes.io/function: |
+      exec:
+        path: ksops
+files:
+  - ./renovate-credentials.enc.yaml

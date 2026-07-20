@@ -1,0 +1,60 @@
+---
+cronjob:
+  schedule: "17 */6 * * *"
+  timeZone: Europe/Rome
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  startingDeadlineSeconds: 900
+  activeDeadlineSeconds: 3600
+  jobBackoffLimit: 0
+  jobRestartPolicy: Never
+  ttlSecondsAfterFinished: 86400
+
+image:
+  tag: 43.272.4@sha256:6aaa848f2e0660525a1a10bd6b24b8e5de806666915015eed1556a2b8eb283fc
+
+renovate:
+  config: |-
+    {
+      "platform": "github",
+      "repositories": ["iitsdani/homelabs"],
+      "onboarding": false,
+      "requireConfig": "required"
+    }
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 12021
+    runAsGroup: 0
+
+existingSecret: renovate-credentials
+
+serviceAccount:
+  name: renovate
+
+env:
+  LOG_LEVEL: debug
+
+securityContext:
+  fsGroup: 0
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 512Mi
+  limits:
+    cpu: "1"
+    memory: 2Gi
+
+extraVolumes:
+  - name: tmp
+    emptyDir: {}
+
+extraVolumeMounts:
+  - name: tmp
+    mountPath: /tmp
