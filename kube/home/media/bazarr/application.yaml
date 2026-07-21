@@ -61,7 +61,7 @@ spec:
                   TZ: Europe/Amsterdam
                 image:
                   repository: ghcr.io/linuxserver/bazarr
-                  tag: 1.5.6@sha256:7adfe3ede9ce3562098a6f944fb644da16bdf245220e707260f89f1507c87b54
+                  tag: 1.6.0@sha256:4c30dc0bb9a5d223075e7f5d12c77bd293c4b460f86d696dbe64763104c1e88c
                 probes:
                   liveness: { enabled: false }
                   readiness: { enabled: false }
