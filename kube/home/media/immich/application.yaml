@@ -90,7 +90,7 @@ spec:
               main:
                 image:
                   repository: ghcr.io/immich-app/immich-server
-                  tag: v3.0.2
+                  tag: v3.0.3
                 env:
                   TZ: Europe/Amsterdam
                   IMMICH_TELEMETRY_INCLUDE: all
