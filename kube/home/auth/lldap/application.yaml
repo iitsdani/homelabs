@@ -43,7 +43,7 @@ spec:
               main:
                 image:
                   repository: ghcr.io/lldap/lldap
-                  tag: latest-alpine-rootless@sha256:75035f094a2739d5c29a4f7eef3198adfa229b78c2d91624d1a62ab26614f9ee
+                  tag: latest-alpine-rootless@sha256:78ff572676cd6c69fca3ff37c5537d286ae93f10845aa9541553e93f90047baa
                 env:
                   TZ: Europe/Amsterdam
                   RUST_LOG: debug
@@ -73,7 +73,7 @@ spec:
               main:
                 image:
                   repository: ghcr.io/lldap/lldap
-                  tag: latest-alpine-rootless@sha256:75035f094a2739d5c29a4f7eef3198adfa229b78c2d91624d1a62ab26614f9ee
+                  tag: latest-alpine-rootless@sha256:78ff572676cd6c69fca3ff37c5537d286ae93f10845aa9541553e93f90047baa
                 command:
                   - ./bootstrap.sh
                 env:
