@@ -18,7 +18,7 @@ jobs:
     if: github.event_name == 'push'
     steps:
       - name: Checkout source code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
       - name: Log in to Tailscale
         uses: tailscale/github-action@306e68a486fd2350f2bfc3b19fcd143891a4a2d8 # v4
         with:
@@ -48,7 +48,7 @@ jobs:
       cluster-nl: ${{ steps.filter.outputs.cluster-nl }}
     steps:
       - name: Checkout source code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
       - uses: dorny/paths-filter@fbd0ab8f3e69293af611ebaee6363fc25e6d187d # v4
         id: filter
         with:
@@ -65,7 +65,7 @@ jobs:
     if: false # TODO(ar3s3ru): re-enable -> ${{ needs.changes.outputs.nix == 'true' }}
     steps:
       - name: Checkout source code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
       - name: Set up Nix system
         uses: ./.github/actions/nix-setup
         with:
