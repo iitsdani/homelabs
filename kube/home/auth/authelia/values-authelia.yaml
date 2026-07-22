@@ -4,7 +4,6 @@ ingress:
   enabled: true
   annotations:
     external-dns.alpha.kubernetes.io/hostname: idp.cianfr.one
-    external-dns.alpha.kubernetes.io/target: in.it.cianfr.one
   gatewayAPI:
     enabled: true
     hostnamesOverride:

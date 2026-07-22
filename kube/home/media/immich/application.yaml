@@ -61,7 +61,6 @@ spec:
             enabled: true
             annotations:
               external-dns.alpha.kubernetes.io/hostname: photos.cianfr.one
-              external-dns.alpha.kubernetes.io/target: in.it.cianfr.one
             hostnames:
               - photos.cianfr.one
             parentRefs:

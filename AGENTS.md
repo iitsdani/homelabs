@@ -35,6 +35,10 @@ When this doesn't work (for whatever reason), you can fallback to SSH in directl
 ssh root@nl-k8s-01 'kubectl ...'
 ```
 
+### GitOps deployment rule
+
+Never manually apply, delete, patch, scale, restart, or otherwise mutate Kubernetes resources managed by this repository. Make changes in Git and let ArgoCD reconcile them. Use `kubectl` only for read-only inspection unless the user explicitly overrides this rule.
+
 ## Kubernetes apps structure
 
 Apps and workloads deployed on Kubernetes follow this structure:

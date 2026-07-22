@@ -54,7 +54,6 @@ spec:
           enabled: true
           annotations:
             external-dns.alpha.kubernetes.io/hostname: media.cianfr.one
-            external-dns.alpha.kubernetes.io/target: in.it.cianfr.one
           hostnames:
             - media.cianfr.one
           parentRefs:
