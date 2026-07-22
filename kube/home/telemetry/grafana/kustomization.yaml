@@ -5,6 +5,7 @@ kind: Kustomization
 
 resources:
   - application.yaml
+  - route.yaml
 
 generators:
   - ksops.yaml

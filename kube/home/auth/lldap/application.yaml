@@ -100,21 +100,21 @@ spec:
               web:
                 port: 17170
 
-        ingress:
-          tailscale:
+        route:
+          internal-gw:
             enabled: true
-            className: tailscale
-            hosts:
-              - host: ldap
-                paths:
-                  - path: /
-                    pathType: Prefix
-                    service:
-                      identifier: main
-                      port: web
-            tls:
-              - hosts:
-                  - ldap
+            kind: HTTPRoute
+            hostnames: [ldap.home.cianfr.one]
+            parentRefs:
+              - name: internal-gw
+                namespace: networking
+                sectionName: https
+            rules:
+              - matches:
+                  - path: { type: PathPrefix, value: / }
+                backendRefs:
+                  - identifier: main
+                    port: web
 
         persistence:
           groups:

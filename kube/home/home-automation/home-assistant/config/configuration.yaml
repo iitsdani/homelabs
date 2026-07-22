@@ -9,7 +9,7 @@ logger:
 
 http:
   cors_allowed_origins:
-    - https://hass.tail2ff90.ts.net
+    - https://hass.home.cianfr.one
   use_x_forwarded_for: true
   trusted_proxies:
     - "127.0.0.1"

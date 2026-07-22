@@ -5,6 +5,7 @@ kind: Kustomization
 
 resources:
   - application.yaml
+  - route.yaml
   - frigate-config-v2.yaml
   - frigate-media-v3.yaml
 

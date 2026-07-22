@@ -65,16 +65,7 @@ spec:
             effect: NoSchedule
 
         ingress:
-          enabled: true
-          ingressClassName: tailscale
-          hosts:
-            - host: &host frigate
-              paths:
-                - path: /
-                  portName: http
-          tls:
-            - hosts:
-                - *host
+          enabled: false
 
         persistence:
           config:

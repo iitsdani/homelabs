@@ -54,21 +54,21 @@ spec:
               streaming:
                 port: 8097
 
-        ingress:
-          tailscale:
+        route:
+          internal-gw:
             enabled: true
-            className: tailscale
-            hosts:
-              - host: mass
-                paths:
-                  - path: /
-                    pathType: Prefix
-                    service:
-                      identifier: main
-                      port: http
-            tls:
-              - hosts:
-                  - mass
+            kind: HTTPRoute
+            hostnames: [mass.home.cianfr.one]
+            parentRefs:
+              - name: internal-gw
+                namespace: networking
+                sectionName: https
+            rules:
+              - matches:
+                  - path: { type: PathPrefix, value: / }
+                backendRefs:
+                  - identifier: main
+                    port: http
 
         persistence:
           tmp:

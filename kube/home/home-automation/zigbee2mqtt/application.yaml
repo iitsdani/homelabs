@@ -18,16 +18,7 @@ spec:
       releaseName: zigbee2mqtt
       valuesObject:
         ingress:
-          enabled: true
-          ingressClassName: tailscale
-          hosts:
-            - host: z2m
-              paths:
-                - path: /
-                  pathType: Prefix
-          tls:
-            - hosts:
-                - z2m
+          enabled: false
 
         service:
           type: ClusterIP

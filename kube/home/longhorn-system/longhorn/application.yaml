@@ -25,10 +25,7 @@ spec:
           serviceMonitor:
             enabled: true
         ingress:
-          enabled: true
-          ingressClassName: tailscale
-          host: longhorn
-          tls: true
+          enabled: false
         defaultSettings:
           v1DataEngine: false
           v2DataEngine: true

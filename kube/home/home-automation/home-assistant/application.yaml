@@ -56,22 +56,6 @@ spec:
                 port: 8123
                 primary: true
 
-        ingress:
-          tailscale:
-            enabled: true
-            className: tailscale
-            hosts:
-              - host: &host hass
-                paths:
-                  - path: /
-                    pathType: Prefix
-                    service:
-                      identifier: main
-                      port: http
-            tls:
-              - hosts:
-                  - *host
-
         route:
           internal-gw:
             enabled: true

@@ -5,6 +5,7 @@ kind: Kustomization
 
 resources:
   - application.yaml
+  - route.yaml
   - longhorn-nixos-path.yaml
   - longhorn-add-nixos-path.yaml
   # NOTE: apparently we cannot use globbing...

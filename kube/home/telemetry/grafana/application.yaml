@@ -20,11 +20,7 @@ spec:
         envFromSecret: grafana-secrets
 
         ingress:
-          enabled: true
-          ingressClassName: tailscale
-          hosts: [&host grafana]
-          tls:
-            - hosts: [*host]
+          enabled: false
 
         annotations:
           reloader.stakater.com/auto: "true"
@@ -85,7 +81,7 @@ spec:
 
         grafana.ini:
           server:
-            root_url: https://grafana.tail2ff90.ts.net
+            root_url: https://grafana.home.cianfr.one
           auth:
             disable_login_form: false
           auth.generic_oauth:
