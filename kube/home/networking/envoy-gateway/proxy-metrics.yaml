@@ -2,13 +2,27 @@
 apiVersion: operator.victoriametrics.com/v1beta1
 kind: VMPodScrape
 metadata:
-  name: envoy-gateway-proxy
+  name: envoy-gateway-proxy-external-gw
 spec:
   selector:
     matchLabels:
       app.kubernetes.io/component: proxy
       app.kubernetes.io/managed-by: envoy-gateway
       gateway.envoyproxy.io/owning-gateway-name: external-gw
+  podMetricsEndpoints:
+    - port: metrics
+      path: /stats/prometheus
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMPodScrape
+metadata:
+  name: envoy-gateway-proxy-internal-gw
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: proxy
+      app.kubernetes.io/managed-by: envoy-gateway
+      gateway.envoyproxy.io/owning-gateway-name: internal-gw
   podMetricsEndpoints:
     - port: metrics
       path: /stats/prometheus

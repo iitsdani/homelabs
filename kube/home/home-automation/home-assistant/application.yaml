@@ -73,13 +73,13 @@ spec:
                   - *host
 
         route:
-          tailscale-gw:
+          internal-gw:
             enabled: true
             kind: HTTPRoute
             hostnames:
               - hass.home.cianfr.one
             parentRefs:
-              - name: tailscale-gw
+              - name: internal-gw
                 namespace: networking
                 sectionName: https
             rules:

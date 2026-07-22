@@ -2,7 +2,7 @@
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
-  name: tailscale-gw
+  name: internal-gw
   annotations:
     argocd.argoproj.io/sync-wave: "2"
 spec:
@@ -11,7 +11,7 @@ spec:
     parametersRef:
       group: gateway.envoyproxy.io
       kind: EnvoyProxy
-      name: tailscale-gw
+      name: internal-gw
   listeners:
     - name: http
       protocol: HTTP

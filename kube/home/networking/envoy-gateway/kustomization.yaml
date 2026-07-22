@@ -7,16 +7,14 @@ resources:
   - envoy-gateway-crds-application.yaml
   - envoy-gateway-controller-application.yaml
   - gatewayclass.yaml
-  - envoyproxy.yaml
-  - certificate.yaml
-  - gateway.yaml
-  - redirect.yaml
-  - tailscale-envoyproxy.yaml
-  - tailscale-certificate.yaml
-  - tailscale-gateway.yaml
-  - tailscale-gateway-http-redirect.yaml
-  - canary-deployment.yaml
-  - canary-service.yaml
-  - canary-route.yaml
+  - external-gw-envoyproxy.yaml
+  - external-gw-certificate.yaml
+  - external-gw-gateway.yaml
+  - external-gw-gateway-http-redirect.yaml
+  - internal-gw-envoyproxy.yaml
+  - internal-gw-certificate.yaml
+  - internal-gw-gateway.yaml
+  - internal-gw-gateway-http-redirect.yaml
+  - internal-gw-connector.yaml
   - controller-metrics.yaml
   - proxy-metrics.yaml

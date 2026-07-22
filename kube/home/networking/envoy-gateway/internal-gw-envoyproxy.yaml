@@ -2,7 +2,7 @@
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: EnvoyProxy
 metadata:
-  name: tailscale-gw
+  name: internal-gw
   annotations:
     argocd.argoproj.io/sync-wave: "1"
 spec:
@@ -30,10 +30,11 @@ spec:
               whenUnsatisfiable: DoNotSchedule
               labelSelector:
                 matchLabels:
-                  gateway.envoyproxy.io/owning-gateway-name: tailscale-gw
+                  gateway.envoyproxy.io/owning-gateway-name: internal-gw
       envoyService:
         externalTrafficPolicy: Local
-        loadBalancerClass: tailscale
+        annotations:
+          io.cilium/lb-ipam-ips: "10.0.3.11,fd00:cafe::3:11"
       envoyPDB:
         minAvailable: 1
 
