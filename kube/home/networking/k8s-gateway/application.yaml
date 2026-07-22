@@ -1,0 +1,86 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: k8s-gateway
+  namespace: argo-system
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://k8s-gateway.github.io/k8s_gateway/
+    chart: k8s-gateway
+    targetRevision: 3.7.2
+    helm:
+      releaseName: k8s-gateway
+      valuesObject:
+        image:
+          registry: ghcr.io
+          repository: k8s-gateway/k8s_gateway
+          tag: 1.8.0
+          pullPolicy: IfNotPresent
+
+        domain: home.cianfr.one
+
+        watchedResources:
+          - HTTPRoute
+          - Ingress
+
+        filters:
+          gatewayClasses:
+            - envoy
+          ingressClasses:
+            - tailscale
+
+        ttl: 30
+
+        replicaCount: 2
+
+        topologySpreadConstraints:
+          - maxSkew: 1
+            topologyKey: kubernetes.io/hostname
+            whenUnsatisfiable: DoNotSchedule
+            labelSelector:
+              matchLabels:
+                app.kubernetes.io/name: k8s-gateway
+
+        service:
+          type: LoadBalancer
+          loadBalancerClass: tailscale
+          useTcp: true
+          annotations:
+            tailscale.com/hostname: coredns-home
+
+        resources:
+          requests:
+            cpu: 50m
+            memory: 64Mi
+          limits:
+            cpu: 200m
+            memory: 128Mi
+
+        extraZonePlugins:
+          - name: errors
+          - name: health
+            configBlock: |-
+              lameduck 5s
+          - name: ready
+          - name: prometheus
+            parameters: 0.0.0.0:9153
+          - name: forward
+            parameters: . /etc/resolv.conf
+          - name: loop
+          - name: reload
+          - name: loadbalance
+  destination:
+    name: in-cluster
+    namespace: networking
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - ServerSideApply=true
+      - ApplyOutOfSyncOnly=true
+      - SkipDryRunOnMissingResource=true

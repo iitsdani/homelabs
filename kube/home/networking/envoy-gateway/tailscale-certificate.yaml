@@ -1,0 +1,15 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: home-cianfr-one-wildcard
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  secretName: home-cianfr-one-wildcard-tls
+  issuerRef:
+    kind: ClusterIssuer
+    name: cianfr.one-acme
+  dnsNames:
+    - home.cianfr.one
+    - "*.home.cianfr.one"

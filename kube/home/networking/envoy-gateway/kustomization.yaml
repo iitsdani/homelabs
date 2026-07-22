@@ -11,6 +11,10 @@ resources:
   - certificate.yaml
   - gateway.yaml
   - redirect.yaml
+  - tailscale-envoyproxy.yaml
+  - tailscale-certificate.yaml
+  - tailscale-gateway.yaml
+  - tailscale-gateway-http-redirect.yaml
   - canary-deployment.yaml
   - canary-service.yaml
   - canary-route.yaml

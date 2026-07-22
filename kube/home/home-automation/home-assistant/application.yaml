@@ -54,6 +54,7 @@ spec:
             ports:
               http:
                 port: 8123
+                primary: true
 
         ingress:
           tailscale:
@@ -70,6 +71,24 @@ spec:
             tls:
               - hosts:
                   - *host
+
+        route:
+          tailscale-gw:
+            enabled: true
+            kind: HTTPRoute
+            hostnames:
+              - hass.home.cianfr.one
+            parentRefs:
+              - name: tailscale-gw
+                namespace: networking
+                sectionName: https
+            rules:
+              - matches:
+                  - path:
+                      type: PathPrefix
+                      value: /
+                backendRefs:
+                  - identifier: main
 
         persistence:
           tmp:
