@@ -15,6 +15,5 @@ resources:
   - internal-gw-certificate.yaml
   - internal-gw-gateway.yaml
   - internal-gw-gateway-http-redirect.yaml
-  - internal-gw-connector.yaml
   - controller-metrics.yaml
   - proxy-metrics.yaml

@@ -5,6 +5,7 @@ metadata:
   name: internal-gw
   annotations:
     argocd.argoproj.io/sync-wave: "2"
+    external-dns.alpha.kubernetes.io/target: internal-gw.tail2ff90.ts.net
 spec:
   gatewayClassName: envoy
   infrastructure:

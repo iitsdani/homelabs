@@ -32,9 +32,9 @@ spec:
                 matchLabels:
                   gateway.envoyproxy.io/owning-gateway-name: internal-gw
       envoyService:
-        externalTrafficPolicy: Local
+        externalTrafficPolicy: Cluster
+        loadBalancerClass: tailscale
         annotations:
-          io.cilium/lb-ipam-ips: "10.0.3.11,fd00:cafe::3:11"
+          tailscale.com/hostname: internal-gw
       envoyPDB:
         minAvailable: 1
-
