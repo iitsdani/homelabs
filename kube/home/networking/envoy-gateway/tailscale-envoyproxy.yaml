@@ -33,7 +33,7 @@ spec:
                   gateway.envoyproxy.io/owning-gateway-name: tailscale-gw
       envoyService:
         externalTrafficPolicy: Local
-        annotations:
-          loadBalancerClass: tailscale
+        loadBalancerClass: tailscale
       envoyPDB:
         minAvailable: 1
+
