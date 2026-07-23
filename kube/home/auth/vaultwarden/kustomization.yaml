@@ -5,11 +5,9 @@ kind: Kustomization
 
 resources:
   - application.yaml
-  - persistentvolumeclaims.yaml
-  - route.yaml
-  - v2-application.yaml
-  - v2-persistentvolumeclaim.yaml
+  - legacy-persistentvolumeclaim.yaml
   - vaultwarden-cnpg-cluster.yaml
+  - vaultwarden-v2-data.yaml
 
 generators:
   - ksops.yaml
