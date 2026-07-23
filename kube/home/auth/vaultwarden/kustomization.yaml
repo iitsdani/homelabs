@@ -7,6 +7,9 @@ resources:
   - application.yaml
   - persistentvolumeclaims.yaml
   - route.yaml
+  - v2-application.yaml
+  - v2-persistentvolumeclaim.yaml
+  - vaultwarden-cnpg-cluster.yaml
 
 generators:
   - ksops.yaml

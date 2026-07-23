@@ -1,0 +1,190 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: vaultwarden-v2
+  namespace: argo-system
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://bjw-s-labs.github.io/helm-charts
+    chart: app-template
+    targetRevision: 5.0.1
+    helm:
+      releaseName: vaultwarden-v2
+      valuesObject:
+        configMaps:
+          config:
+            data:
+              TZ: Europe/Amsterdam
+              ROCKET_PORT: "8080"
+              DATA_FOLDER: /data
+              DOMAIN: https://vault-v2.cianfr.one
+              WEB_VAULT_ENABLED: "true"
+              SENDS_ALLOWED: "true"
+              SIGNUPS_ALLOWED: "false"
+              SIGNUPS_VERIFY: "true"
+              REQUIRE_DEVICE_EMAIL: "true"
+              EMAIL_ATTEMPTS_LIMIT: "3"
+              EMAIL_EXPIRATION_TIME: "600"
+              INVITATIONS_ALLOWED: "true"
+              INVITATION_EXPIRATION_HOURS: "120"
+              PASSWORD_HINTS_ALLOWED: "true"
+              SHOW_PASSWORD_HINT: "true"
+              ORG_CREATION_USERS: danilocianfr@gmail.com
+              ORG_EVENTS_ENABLED: "false"
+              EMAIL_CHANGE_ALLOWED: "true"
+              DB_CONNECTION_RETRIES: "15"
+              DATABASE_MAX_CONNS: "10"
+              DATABASE_MIN_CONNS: "2"
+              DATABASE_IDLE_TIMEOUT: "600"
+              EMERGENCY_ACCESS_ALLOWED: "true"
+              EMERGENCY_NOTIFICATION_REMINDER_SCHEDULE: "0 3 * * * *"
+              EMERGENCY_REQUEST_TIMEOUT_SCHEDULE: "0 7 * * * *"
+              SMTP_HOST: smtp.gmail.com
+              SMTP_FROM: nl.homelab.ar3s3ru@gmail.com
+              SMTP_SECURITY: starttls
+              SMTP_PORT: "587"
+              SMTP_AUTH_MECHANISM: Plain
+              SMTP_TIMEOUT: "15"
+              SMTP_EMBED_IMAGES: "true"
+              ICON_SERVICE: internal
+              ICON_CACHE_TTL: "2592000"
+              ICON_CACHE_NEGTTL: "259200"
+              ICON_REDIRECT_CODE: "302"
+
+        defaultPodOptions:
+          securityContext:
+            fsGroup: 65534
+            fsGroupChangePolicy: OnRootMismatch
+            runAsGroup: 65534
+            runAsNonRoot: true
+            runAsUser: 65534
+
+        controllers:
+          main:
+            type: deployment
+            replicas: 1
+            strategy: Recreate
+            annotations:
+              reloader.stakater.com/auto: "true"
+            containers:
+              main:
+                image:
+                  repository: ghcr.io/dani-garcia/vaultwarden
+                  tag: 1.36.0@sha256:d626d04934cd1192ad8ced1adb975099fca78cec33ab467d2d3c923cde7f3b0c
+                  pullPolicy: IfNotPresent
+                envFrom:
+                  - configMapRef:
+                      identifier: config
+                env:
+                  DATABASE_URL:
+                    valueFrom:
+                      secretKeyRef:
+                        name: vaultwarden-cnpg-cluster-app
+                        key: fqdn-uri
+                  ADMIN_TOKEN:
+                    valueFrom:
+                      secretKeyRef:
+                        name: vaultwarden-secrets
+                        key: admin-token
+                  SMTP_USERNAME:
+                    valueFrom:
+                      secretKeyRef:
+                        name: vaultwarden-secrets
+                        key: smtp-user
+                  SMTP_PASSWORD:
+                    valueFrom:
+                      secretKeyRef:
+                        name: vaultwarden-secrets
+                        key: smtp-password
+                probes:
+                  liveness: &health-probe
+                    enabled: true
+                    custom: true
+                    spec:
+                      httpGet:
+                        path: /alive
+                        port: 8080
+                      periodSeconds: 10
+                      timeoutSeconds: 1
+                      failureThreshold: 3
+                  readiness: *health-probe
+                  startup:
+                    enabled: true
+                    custom: true
+                    spec:
+                      httpGet:
+                        path: /alive
+                        port: 8080
+                      periodSeconds: 5
+                      timeoutSeconds: 1
+                      failureThreshold: 30
+                resources:
+                  limits:
+                    cpu: 500m
+                    memory: 512Mi
+                  requests:
+                    cpu: 100m
+                    memory: 128Mi
+                securityContext:
+                  allowPrivilegeEscalation: false
+                  capabilities:
+                    drop: [ALL]
+                  runAsGroup: 65534
+                  runAsNonRoot: true
+                  runAsUser: 65534
+                  seccompProfile:
+                    type: RuntimeDefault
+
+        service:
+          main:
+            controller: main
+            type: ClusterIP
+            ports:
+              http:
+                port: 80
+                targetPort: 8080
+
+        route:
+          main:
+            enabled: true
+            kind: HTTPRoute
+            annotations:
+              external-dns.alpha.kubernetes.io/hostname: vault-v2.cianfr.one
+            hostnames:
+              - vault-v2.cianfr.one
+            parentRefs:
+              - name: external-gw
+                namespace: networking
+                sectionName: https
+            rules:
+              - matches:
+                  - path:
+                      type: PathPrefix
+                      value: /
+                backendRefs:
+                  - identifier: main
+                    port: http
+
+        persistence:
+          data:
+            type: persistentVolumeClaim
+            existingClaim: vaultwarden-v2-data
+            globalMounts:
+              - path: /data
+  destination:
+    name: in-cluster
+    namespace: auth
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - ServerSideApply=true
+      - ApplyOutOfSyncOnly=true
+      - SkipDryRunOnMissingResource=true

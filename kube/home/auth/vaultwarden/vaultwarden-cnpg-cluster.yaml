@@ -1,0 +1,27 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: vaultwarden-cnpg-cluster
+  namespace: auth
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  instances: 1
+  imageName: ghcr.io/cloudnative-pg/postgresql:17.6
+
+  bootstrap:
+    initdb:
+      database: vaultwarden
+      owner: vaultwarden
+
+  storage:
+    size: 1Gi
+    storageClass: longhorn-nvme-encrypted-3-replicas
+
+  managed:
+    services:
+      disabledDefaultServices: ["ro", "r"]
+
+  monitoring:
+    enablePodMonitor: true
