@@ -71,7 +71,6 @@ spec:
             replicas: 1
             strategy: Recreate
             annotations:
-              argocd.argoproj.io/sync-options: Force=true,Replace=true
               reloader.stakater.com/auto: "true"
             containers:
               main:
