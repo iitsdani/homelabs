@@ -7,7 +7,9 @@ spec:
   hostnames:
     - grafana.home.cianfr.one
   parentRefs:
-    - name: internal-gw
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: internal-gw
       namespace: networking
       sectionName: https
   rules:
@@ -16,5 +18,8 @@ spec:
             type: PathPrefix
             value: /
       backendRefs:
-        - name: grafana
+        - group: ""
+          kind: Service
+          name: grafana
           port: 80
+          weight: 1

@@ -7,10 +7,16 @@ metadata:
     argocd.argoproj.io/sync-wave: "3"
 spec:
   parentRefs:
-    - name: external-gw
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: external-gw
       sectionName: http
   rules:
-    - filters:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      filters:
         - type: RequestRedirect
           requestRedirect:
             scheme: https

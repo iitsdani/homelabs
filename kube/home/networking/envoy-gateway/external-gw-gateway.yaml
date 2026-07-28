@@ -26,7 +26,8 @@ spec:
       tls:
         mode: Terminate
         certificateRefs:
-          - kind: Secret
+          - group: ""
+            kind: Secret
             name: cianfr.one-wildcard-tls
       allowedRoutes:
         namespaces:

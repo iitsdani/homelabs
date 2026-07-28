@@ -7,7 +7,9 @@ spec:
   hostnames:
     - frigate.home.cianfr.one
   parentRefs:
-    - name: internal-gw
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: internal-gw
       namespace: networking
       sectionName: https
   rules:
@@ -16,5 +18,8 @@ spec:
             type: PathPrefix
             value: /
       backendRefs:
-        - name: frigate
+        - group: ""
+          kind: Service
+          name: frigate
           port: 5000
+          weight: 1
