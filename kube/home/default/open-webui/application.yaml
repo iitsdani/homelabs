@@ -58,9 +58,16 @@ spec:
             value: https://chat.home.cianfr.one
           - name: OAUTH_CODE_CHALLENGE_METHOD
             value: S256
-        extraEnvFrom:
-          - secretRef:
-              name: open-webui-secrets
+          - name: OLLAMA_API_CONFIGS
+            valueFrom:
+              secretKeyRef:
+                name: open-webui-secrets
+                key: ollama-api-configs
+          - name: WEBUI_SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name: open-webui-secrets
+                key: webui-secret-key
         service:
           type: ClusterIP
           port: 80
