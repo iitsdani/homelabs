@@ -414,3 +414,23 @@ configMap:
             - authorization_code
             - refresh_token
           token_endpoint_auth_method: client_secret_post
+        - client_id: "open-webui"
+          client_name: "Open WebUI"
+          client_secret: { path: "/secrets/authelia-oidc-secrets/open-webui.client_secret.key" }
+          public: false
+          require_pkce: true
+          pkce_challenge_method: S256
+          consent_mode: implicit
+          authorization_policy: one_factor
+          redirect_uris:
+            - https://chat.home.cianfr.one/oauth/oidc/callback
+          scopes:
+            - openid
+            - email
+            - profile
+            - groups
+          response_types:
+            - code
+          grant_types:
+            - authorization_code
+          token_endpoint_auth_method: client_secret_basic

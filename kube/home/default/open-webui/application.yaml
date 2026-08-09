@@ -1,0 +1,96 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: open-webui
+  namespace: argo-system
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://helm.openwebui.com
+    chart: open-webui
+    targetRevision: 16.0.0
+    helm:
+      releaseName: open-webui
+      valuesObject:
+        ollama:
+          enabled: false
+        pipelines:
+          enabled: false
+        ollamaUrls:
+          - https://ollama.com
+        websocket:
+          manager: ""
+          redis:
+            enabled: false
+        replicaCount: 1
+        image:
+          repository: ghcr.io/open-webui/open-webui
+          tag: 0.11.0
+        sso:
+          enabled: true
+          enableSignup: true
+          enableRoleManagement: true
+          roleManagement:
+            rolesClaim: groups
+            allowedRoles: "*"
+            adminRoles: admin
+          oidc:
+            enabled: true
+            clientId: open-webui
+            clientExistingSecret: open-webui-secrets
+            clientExistingSecretKey: oidc-client-secret
+            providerUrl: https://idp.cianfr.one/.well-known/openid-configuration
+            providerName: Authelia
+            scopes: "openid email profile groups"
+        extraEnvVars:
+          - name: ENABLE_SIGNUP
+            value: "false"
+          - name: WEBUI_URL
+            value: https://chat.home.cianfr.one
+          - name: OAUTH_MERGE_ACCOUNTS_BY_EMAIL
+            value: "true"
+        extraEnvFrom:
+          - secretRef:
+              name: open-webui-secrets
+        service:
+          type: ClusterIP
+          port: 80
+          containerPort: 8080
+        route:
+          enabled: true
+          kind: HTTPRoute
+          hostnames:
+            - chat.home.cianfr.one
+          parentRefs:
+            - name: internal-gw
+              namespace: networking
+              sectionName: https
+        persistence:
+          enabled: true
+          size: 5Gi
+          storageClass: longhorn-nvme-encrypted-3-replicas
+          accessModes:
+            - ReadWriteOnce
+        resources:
+          requests:
+            cpu: 100m
+            memory: 512Mi
+          limits:
+            cpu: "1"
+            memory: 2Gi
+  destination:
+    name: in-cluster
+    namespace: default
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - ServerSideApply=true
+      - ApplyOutOfSyncOnly=true
+      - SkipDryRunOnMissingResource=true

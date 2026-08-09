@@ -1,0 +1,12 @@
+---
+apiVersion: viaduct.ai/v1
+kind: ksops
+metadata:
+  name: open-webui-secrets-generator
+  namespace: default
+  annotations:
+    config.kubernetes.io/function: |
+      exec:
+        path: ksops
+files:
+  - ./open-webui-secrets.enc.yaml
