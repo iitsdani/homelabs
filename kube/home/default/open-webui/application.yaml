@@ -54,6 +54,10 @@ spec:
             value: https://chat.home.cianfr.one
           - name: OAUTH_MERGE_ACCOUNTS_BY_EMAIL
             value: "true"
+          - name: CORS_ALLOW_ORIGIN
+            value: https://chat.home.cianfr.one
+          - name: OAUTH_CODE_CHALLENGE_METHOD
+            value: S256
         extraEnvFrom:
           - secretRef:
               name: open-webui-secrets
