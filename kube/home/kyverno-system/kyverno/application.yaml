@@ -14,6 +14,13 @@ spec:
     targetRevision: 3.7.2
     helm:
       releaseName: kyverno
+      valuesObject:
+        admissionController:
+          # Force all admission webhooks to failurePolicy: Ignore.
+          # Prevents the cluster-wide deadlock where a down Kyverno webhook
+          # (no endpoints) blocks all pod creation. See INC-0008/INC-0009.
+          forceFailurePolicyIgnore:
+            enabled: true
   destination:
     name: in-cluster
     namespace: kyverno-system
