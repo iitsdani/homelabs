@@ -5,6 +5,7 @@ This repo contains the Infrastructure as Code (IaC) configuration for my persona
 Refer to [README.md](./README.md) for more details.
 
 In short:
+
 - Home servers are either running NixOS baremetal (e.g. `nl-k8s-01` and `nl-k8s-04`) or NixOS VMs on Proxmox VE baremetal machines (e.g. `nl-k8s-02` on `nl-pve-01` and `nl-k8s-03` on `nl-pve-02`),
 - Kubernetes cluster uses k3s, which is installed through Nixpkgs and configured through a dedicated Nix module
 - Apps deployed on the Kubernetes cluster through GitOps with ArgoCD, looking at the `kube/` folder.
@@ -25,7 +26,7 @@ This works both when connected to the home network LAN, and remotely through Tai
 When debugging or investigating issues on the Kubernetes cluster (e.g. specific apps), use kubectl using the `nl` context:
 
 ```
-kubectl --context=nl
+kubectl --context=home
 ```
 
 When this doesn't work (for whatever reason), you can fallback to SSH in directly in one of the Kubernetes nodes and run kubectl from there:
@@ -56,10 +57,12 @@ kube/
 Both `{namespace}` and `{app}` will be treated by ArgoCD as a dynamically-generated Application (through ApplicationSet).
 
 `{namespace}` contains:
+
 - The definition of the `Namespace` Kubernetes resource in `namespace.yaml`, referenced in `kustomization.yaml`
 - Each app deployed as an `{app}` subfolder
 
 `{app}` contains:
+
 - A `values-*.yaml` file that defines the configuration of a specific Helm chart (referenced in `kustomization.yaml` under `helmCharts`)
 - (Optional) One or more Kubernetes resources manifests (e.g. `my-app-data.yaml` for a `my-app-data` PersistentVolumeClaim), to be imported under `kustomization.yaml` in `resources`
 - (Optional) A `ksops.yaml` file that references any `*.enc.yaml` file, which should be `Secret` resources encrypted using SOPS, and the `ksops.yaml` should be imported in `kustomization.yaml` under `generators`.
