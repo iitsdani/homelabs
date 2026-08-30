@@ -115,16 +115,16 @@ spec:
           go2rtc:
             streams:
               e1-zoom-01:
-                - rtsp://{FRIGATE_E1_ZOOM_01_RTSP_USERNAME}:{FRIGATE_E1_ZOOM_01_RTSP_PASSWORD}@10.90.0.11/h264Preview_01_main
+                - rtsp://{FRIGATE_E1_ZOOM_01_RTSP_USERNAME}:{FRIGATE_E1_ZOOM_01_RTSP_PASSWORD}@{FRIGATE_E1_ZOOM_01_HOST}/h264Preview_01_main
                 - "ffmpeg:e1-zoom-01#audio=opus"
               e1-zoom-01-sub:
-                - rtsp://{FRIGATE_E1_ZOOM_01_RTSP_USERNAME}:{FRIGATE_E1_ZOOM_01_RTSP_PASSWORD}@10.90.0.11/h264Preview_01_sub
+                - rtsp://{FRIGATE_E1_ZOOM_01_RTSP_USERNAME}:{FRIGATE_E1_ZOOM_01_RTSP_PASSWORD}@{FRIGATE_E1_ZOOM_01_HOST}/h264Preview_01_sub
                 - "ffmpeg:e1-zoom-01-sub#audio=opus"
               e1-zoom-02:
-                - rtsp://{FRIGATE_E1_ZOOM_02_RTSP_USERNAME}:{FRIGATE_E1_ZOOM_02_RTSP_PASSWORD}@10.90.0.12/h264Preview_01_main
+                - rtsp://{FRIGATE_E1_ZOOM_02_RTSP_USERNAME}:{FRIGATE_E1_ZOOM_02_RTSP_PASSWORD}@{FRIGATE_E1_ZOOM_02_HOST}/h264Preview_01_main
                 - "ffmpeg:e1-zoom-02#audio=opus"
               e1-zoom-02-sub:
-                - rtsp://{FRIGATE_E1_ZOOM_02_RTSP_USERNAME}:{FRIGATE_E1_ZOOM_02_RTSP_PASSWORD}@10.90.0.12/h264Preview_01_sub
+                - rtsp://{FRIGATE_E1_ZOOM_02_RTSP_USERNAME}:{FRIGATE_E1_ZOOM_02_RTSP_PASSWORD}@{FRIGATE_E1_ZOOM_02_HOST}/h264Preview_01_sub
                 - "ffmpeg:e1-zoom-02-sub#audio=opus"
 
           cameras:
