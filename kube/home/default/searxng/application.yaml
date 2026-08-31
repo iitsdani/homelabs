@@ -1,0 +1,112 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: searxng
+  namespace: argo-system
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://bjw-s-labs.github.io/helm-charts
+    chart: app-template
+    targetRevision: 5.1.0
+    helm:
+      releaseName: searxng
+      valuesObject:
+        defaultPodOptions:
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 977
+            runAsGroup: 977
+            fsGroup: 977
+            fsGroupChangePolicy: OnRootMismatch
+            seccompProfile:
+              type: RuntimeDefault
+
+        controllers:
+          main:
+            type: deployment
+            replicas: 1
+            strategy: Recreate
+            annotations:
+              reloader.stakater.com/auto: "true"
+            containers:
+              main:
+                image:
+                  repository: ghcr.io/searxng/searxng
+                  tag: 2026.8.29-d226b78bc@sha256:b36af7984b87191b595bc5301418ed6432c047668a4547ab531a7439b816fac3
+                env:
+                  SEARXNG_BASE_URL: http://searxng.default.svc.cluster.local:8080/
+                  SEARXNG_PORT: "8080"
+                  SEARXNG_SECRET:
+                    valueFrom:
+                      secretKeyRef:
+                        name: searxng-secret
+                        key: secret-key
+                probes:
+                  liveness: &probe
+                    enabled: true
+                    custom: true
+                    spec:
+                      httpGet:
+                        path: /healthz
+                        port: 8080
+                      initialDelaySeconds: 5
+                      periodSeconds: 10
+                  readiness: *probe
+                resources:
+                  requests:
+                    cpu: 50m
+                    memory: 128Mi
+                  limits:
+                    cpu: 500m
+                    memory: 512Mi
+                securityContext:
+                  allowPrivilegeEscalation: false
+                  capabilities:
+                    drop:
+                      - ALL
+                  readOnlyRootFilesystem: true
+
+        service:
+          main:
+            controller: main
+            type: ClusterIP
+            ports:
+              http:
+                port: 8080
+
+        persistence:
+          config:
+            enabled: true
+            type: configMap
+            name: searxng-config
+            globalMounts:
+              - path: /etc/searxng/settings.yml
+                subPath: settings.yml
+                readOnly: true
+          cache:
+            enabled: true
+            type: emptyDir
+            globalMounts:
+              - path: /var/cache/searxng
+          tmp:
+            enabled: true
+            type: emptyDir
+            globalMounts:
+              - path: /tmp
+  destination:
+    name: in-cluster
+    namespace: default
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - ServerSideApply=true
+      - ApplyOutOfSyncOnly=true
+      - SkipDryRunOnMissingResource=true

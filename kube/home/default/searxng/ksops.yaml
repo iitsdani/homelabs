@@ -1,0 +1,12 @@
+---
+apiVersion: viaduct.ai/v1
+kind: ksops
+metadata:
+  name: searxng-secrets-generator
+  namespace: default
+  annotations:
+    config.kubernetes.io/function: |
+      exec:
+        path: ksops
+files:
+  - ./searxng-secret.enc.yaml

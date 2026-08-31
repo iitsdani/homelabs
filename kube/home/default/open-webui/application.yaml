@@ -58,6 +58,16 @@ spec:
             value: https://chat.home.cianfr.one
           - name: OAUTH_CODE_CHALLENGE_METHOD
             value: S256
+          - name: ENABLE_WEB_SEARCH
+            value: "true"
+          - name: WEB_SEARCH_ENGINE
+            value: searxng
+          - name: SEARXNG_QUERY_URL
+            value: http://searxng.default.svc.cluster.local:8080/search
+          - name: WEB_SEARCH_RESULT_COUNT
+            value: "5"
+          - name: WEB_SEARCH_CONCURRENT_REQUESTS
+            value: "2"
           - name: OLLAMA_API_CONFIGS
             valueFrom:
               secretKeyRef:

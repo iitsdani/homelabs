@@ -1,0 +1,16 @@
+---
+use_default_settings: true
+
+server:
+  limiter: false
+  image_proxy: false
+  method: GET
+  public_instance: false
+
+search:
+  formats:
+    - html
+    - json
+
+general:
+  instance_name: Open WebUI Search
