@@ -77,6 +77,14 @@ spec:
               OC_EXCLUDE_RUN_SERVICES: "idp"
               OC_OIDC_ISSUER: https://idp.cianfr.one
               OC_OIDC_CLIENT_ID: opencloud
+              WEBFINGER_WEB_OIDC_CLIENT_ID: opencloud
+              WEBFINGER_WEB_OIDC_CLIENT_SCOPES: openid,profile,email,groups
+              WEBFINGER_DESKTOP_OIDC_CLIENT_ID: OpenCloudDesktop
+              WEBFINGER_DESKTOP_OIDC_CLIENT_SCOPES: openid,profile,email,offline_access,groups
+              WEBFINGER_IOS_OIDC_CLIENT_ID: OpenCloudIOS
+              WEBFINGER_IOS_OIDC_CLIENT_SCOPES: openid,profile,email,offline_access,groups
+              WEBFINGER_ANDROID_OIDC_CLIENT_ID: OpenCloudAndroid
+              WEBFINGER_ANDROID_OIDC_CLIENT_SCOPES: openid,profile,email,offline_access,groups
               PROXY_ROLE_ASSIGNMENT_DRIVER: oidc
               PROXY_ROLE_ASSIGNMENT_OIDC_CLAIM: groups
               WEB_OIDC_SCOPE: openid profile email groups
