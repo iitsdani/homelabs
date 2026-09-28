@@ -4,12 +4,16 @@
 # on edge-triggered numeric_state thresholds, which are unreliable across
 # restarts and missed state transitions.
 
+# NOTE(ar3s3ru): The telegram_bot integration no longer provides dedicated
+# telegram_callback/telegram_command triggers; callback queries are received
+# through the bot's event entity instead.
+# Source: https://www.home-assistant.io/integrations/telegram_bot/
+
 - id: litter_robot_record_bag_change
   alias: Record Litter Robot bag change
   description: >-
     Resets the bag-change timer whenever the waste drawer sensor drops back
-    to (nearly) 0%, the Telegram acknowledge button is pressed, or the manual
-    dashboard button is used.
+    to (nearly) 0%, or the manual dashboard button is used.
   mode: queued
   max_exceeded: silent
   triggers:
@@ -17,9 +21,6 @@
       trigger: numeric_state
       entity_id: sensor.litter_robot_4_waste_drawer
       below: 1
-    - alias: Telegram acknowledge button pressed
-      trigger: telegram_callback
-      callback_data: /litter_robot_bag_changed
     - alias: Dashboard acknowledge button pressed
       trigger: state
       entity_id: input_button.litter_robot_reset_bag_timer
@@ -30,6 +31,45 @@
         entity_id: input_datetime.litter_robot_last_bag_change
       data:
         datetime: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }}"
+
+- id: litter_robot_bag_changed_via_telegram
+  alias: Acknowledge Litter Robot bag change via Telegram
+  description: >-
+    Handles the callback from the reminder's inline keyboard button: resets
+    the bag-change timer, acknowledges the callback query and deletes the
+    reminder message.
+  triggers:
+    - alias: Telegram bot received a callback query
+      trigger: state
+      entity_id: event.dani_sarra_bot_update_event
+  conditions:
+    - alias: Callback query received
+      condition: state
+      entity_id: event.dani_sarra_bot_update_event
+      attribute: event_type
+      state: telegram_callback
+    - alias: Callback query is the bag-changed acknowledge button
+      condition: state
+      entity_id: event.dani_sarra_bot_update_event
+      attribute: command
+      state: /litter_robot_bag_changed
+  actions:
+    - alias: Record the bag change timestamp
+      action: input_datetime.set_datetime
+      target:
+        entity_id: input_datetime.litter_robot_last_bag_change
+      data:
+        datetime: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }}"
+    - alias: Acknowledge the callback query
+      action: telegram_bot.answer_callback_query
+      data:
+        callback_query_id: "{{ trigger.to_state.attributes.id }}"
+        message: "Nice one 🐈 Timer reset!"
+    - alias: Delete the reminder message
+      action: telegram_bot.delete_message
+      data:
+        chat_id: "{{ trigger.to_state.attributes.chat_id }}"
+        message_id: "{{ trigger.to_state.attributes.message.message_id }}"
 
 - id: litter_robot_send_bag_change_reminder
   alias: Send reminder to change Litter Robot bag
@@ -75,28 +115,5 @@
           _{{ states('sensor.litter_robot_4_waste_drawer') }}%_ fill.
 
           Please change it soon, otherwise the apartment will smell like 💩.
-      inline:
-        - - text: "✅ Bag changed, reset timer"
-            callback_data: "/litter_robot_bag_changed"
-
-- id: litter_robot_acknowledge_bag_change_via_telegram
-  alias: Acknowledge Litter Robot bag change via Telegram
-  description: >-
-    Answers the Telegram callback from the reminder button and cleans up the
-    reminder message. The timer reset itself is handled by the
-    litter_robot_record_bag_change automation.
-  triggers:
-    - alias: Telegram acknowledge button pressed
-      trigger: telegram_callback
-      callback_data: /litter_robot_bag_changed
-  actions:
-    - alias: Acknowledge the callback
-      action: telegram_bot.answer_callback_query
-      data:
-        callback_query_id: "{{ trigger.id }}"
-        message: "Nice one 🐈 Timer reset!"
-    - alias: Delete the reminder message
-      action: telegram_bot.delete_message
-      data:
-        chat_id: "{{ trigger.chat.id }}"
-        message_id: "{{ trigger.message.message_id }}"
+      inline_keyboard:
+        - "✅ Bag changed, reset timer:/litter_robot_bag_changed"
