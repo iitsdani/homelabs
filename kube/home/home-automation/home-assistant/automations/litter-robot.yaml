@@ -115,5 +115,5 @@
           _{{ states('sensor.litter_robot_4_waste_drawer') }}%_ fill.
 
           Please change it soon, otherwise the apartment will smell like 💩.
-      inline_keyboard:
-        - "✅ Bag changed, reset timer:/litter_robot_bag_changed"
+        inline_keyboard:
+          - "✅ Bag changed, reset timer:/litter_robot_bag_changed"
