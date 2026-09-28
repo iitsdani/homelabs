@@ -1,18 +1,102 @@
 ---
-- id: send_reminder_to_empty_litter_robot_waste_drawer
-  alias: Send reminder to empty Litter Robot waste drawer
+# NOTE(ar3s3ru): All reminder logic is evaluated periodically against a stored
+# timestamp (input_datetime.litter_robot_last_bag_change) rather than relying
+# on edge-triggered numeric_state thresholds, which are unreliable across
+# restarts and missed state transitions.
+
+- id: litter_robot_record_bag_change
+  alias: Record Litter Robot bag change
+  description: >-
+    Resets the bag-change timer whenever the waste drawer sensor drops back
+    to (nearly) 0%, the Telegram acknowledge button is pressed, or the manual
+    dashboard button is used.
+  mode: queued
+  max_exceeded: silent
   triggers:
-    - alias: Litter Robot waste drawer has reached the defined fill level
+    - alias: Waste drawer level dropped to (nearly) 0%
       trigger: numeric_state
       entity_id: sensor.litter_robot_4_waste_drawer
-      above: input_number.litter_robot_waste_drawer_level_notification
+      below: 1
+    - alias: Telegram acknowledge button pressed
+      trigger: telegram_callback
+      callback_data: /litter_robot_bag_changed
+    - alias: Dashboard acknowledge button pressed
+      trigger: state
+      entity_id: input_button.litter_robot_reset_bag_timer
   actions:
-    - alias: Send notification to our Telegram group chat
+    - alias: Record the bag change timestamp
+      action: input_datetime.set_datetime
+      target:
+        entity_id: input_datetime.litter_robot_last_bag_change
+      data:
+        datetime: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }}"
+
+- id: litter_robot_send_bag_change_reminder
+  alias: Send reminder to change Litter Robot bag
+  description: >-
+    Every 6 hours, if enough days have passed since the last bag change and
+    the waste drawer has usage in it, send a Telegram reminder with an
+    acknowledge button. Repeats until the timer is reset.
+  triggers:
+    - alias: Every 6 hours
+      trigger: time_pattern
+      hours: /6
+  conditions:
+    - alias: Last bag change timestamp is recorded
+      condition: not
+      conditions:
+        - condition: state
+          entity_id: input_datetime.litter_robot_last_bag_change
+          state: unknown
+    - alias: Enough days have passed since the last bag change
+      condition: template
+      value_template: >-
+        {{ (now() - states('input_datetime.litter_robot_last_bag_change') | as_datetime)
+           >= (states('input_number.litter_robot_days_notification_interval') | int(3)) * 86400 }}
+    - alias: Waste drawer has usage (level increased from 0%)
+      condition: numeric_state
+      entity_id: sensor.litter_robot_4_waste_drawer
+      above: 5
+    - alias: NOT within sleeping times
+      condition: not
+      conditions:
+        - condition: time
+          after: input_datetime.sleeping_time
+          before: input_datetime.wakeup_time
+  actions:
+    - alias: Send reminder to our Telegram group chat
       action: telegram_bot.send_message
       data:
         message_thread_id: 13
-        title: "*Empty the Litter Robot waste drawer!*"
+        title: "*Time to change the Litter Robot bag!*"
         message: |
-          The Litter Robot waste drawer has reached _{{ states('sensor.litter_robot_4_waste_drawer') }}%_ fill.
+          It has been *{{ ((now() - states('input_datetime.litter_robot_last_bag_change') | as_datetime).days) }} days*
+          since the last bag change, and the waste drawer is at
+          _{{ states('sensor.litter_robot_4_waste_drawer') }}%_ fill.
 
-          Please empty it as soon as possible, otherwise the apartment will smell like 💩.
+          Please change it soon, otherwise the apartment will smell like 💩.
+      inline:
+        - - text: "✅ Bag changed, reset timer"
+            callback_data: "/litter_robot_bag_changed"
+
+- id: litter_robot_acknowledge_bag_change_via_telegram
+  alias: Acknowledge Litter Robot bag change via Telegram
+  description: >-
+    Answers the Telegram callback from the reminder button and cleans up the
+    reminder message. The timer reset itself is handled by the
+    litter_robot_record_bag_change automation.
+  triggers:
+    - alias: Telegram acknowledge button pressed
+      trigger: telegram_callback
+      callback_data: /litter_robot_bag_changed
+  actions:
+    - alias: Acknowledge the callback
+      action: telegram_bot.answer_callback_query
+      data:
+        callback_query_id: "{{ trigger.id }}"
+        message: "Nice one 🐈 Timer reset!"
+    - alias: Delete the reminder message
+      action: telegram_bot.delete_message
+      data:
+        chat_id: "{{ trigger.chat.id }}"
+        message_id: "{{ trigger.message.message_id }}"

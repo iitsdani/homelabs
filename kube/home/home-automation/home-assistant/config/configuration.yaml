@@ -54,6 +54,11 @@ input_datetime:
     has_date: false
     has_time: true
     icon: mdi:coffee-maker
+  litter_robot_last_bag_change:
+    name: Litter Robot last bag change
+    has_date: true
+    has_time: true
+    icon: mdi:calendar-clock
 
 input_select:
   home_mode:
@@ -77,6 +82,9 @@ input_button:
   vacuum_around_litter_robot:
     name: Vacuum around Litter Robot
     icon: mdi:robot-vacuum
+  litter_robot_reset_bag_timer:
+    name: Litter Robot bag changed
+    icon: mdi:trash-can
 
 input_number:
   litter_robot_waste_drawer_level_notification:
@@ -88,8 +96,6 @@ input_number:
     max: 100
     step: 5
     unit_of_measurement: "%"
-  # TODO(ar3s3ru): still need to implement this automation,
-  # it'll likely require a intermediate state update (e.g. next date -> notify -> update next date)
   litter_robot_days_notification_interval:
     name: Litter Robot days interval notification
     mode: slider
