@@ -82,17 +82,14 @@
       trigger: time_pattern
       hours: /6
   conditions:
-    - alias: Last bag change timestamp is recorded
-      condition: not
-      conditions:
-        - condition: state
-          entity_id: input_datetime.litter_robot_last_bag_change
-          state: unknown
     - alias: Enough days have passed since the last bag change
       condition: template
       value_template: >-
-        {{ (now() - states('input_datetime.litter_robot_last_bag_change') | as_datetime)
-           >= (states('input_number.litter_robot_days_notification_interval') | int(3)) * 86400 }}
+        {% set last_change = state_attr('input_datetime.litter_robot_last_bag_change', 'timestamp') %}
+        {{ has_value('input_datetime.litter_robot_last_bag_change')
+           and last_change is number
+           and now().timestamp() - last_change
+               >= (states('input_number.litter_robot_days_notification_interval') | int(3)) * 86400 }}
     - alias: Waste drawer has usage (level increased from 0%)
       condition: numeric_state
       entity_id: sensor.litter_robot_4_waste_drawer
@@ -110,7 +107,7 @@
         message_thread_id: 13
         title: "*Time to change the Litter Robot bag!*"
         message: |
-          It has been *{{ ((now() - states('input_datetime.litter_robot_last_bag_change') | as_datetime).days) }} days*
+          It has been *{{ ((now().timestamp() - state_attr('input_datetime.litter_robot_last_bag_change', 'timestamp')) / 86400) | int }} days*
           since the last bag change, and the waste drawer is at
           _{{ states('sensor.litter_robot_4_waste_drawer') }}%_ fill.
 
