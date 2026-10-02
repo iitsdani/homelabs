@@ -17,10 +17,16 @@ spec:
     helm:
       releaseName: open-webui
       valuesObject:
+        annotations:
+          reloader.stakater.com/auto: "true"
         ollama:
           enabled: false
         pipelines:
           enabled: false
+        enableOpenaiApi: true
+        openaiBaseApiUrl: http://cliproxyapi.default.svc.cluster.local:8317/v1
+        openaiApiKeyExistingSecret: cliproxyapi-secrets
+        openaiApiKeyExistingSecretKey: api-key
         ollamaUrls:
           - https://ollama.com
         websocket:
@@ -48,6 +54,8 @@ spec:
             providerName: Authelia
             scopes: "openid email profile groups"
         extraEnvVars:
+          - name: OPENAI_API_CONFIGS
+            value: '{"0":{"enable":true,"prefix_id":"codex"}}'
           - name: ENABLE_SIGNUP
             value: "false"
           - name: WEBUI_URL
