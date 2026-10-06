@@ -11,9 +11,31 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: git@github.com:iitsdani/homelabs.git
-    targetRevision: main
-    path: kube/home/media/immich/redis-maintenance
+    repoURL: https://ot-container-kit.github.io/helm-charts
+    chart: redis
+    targetRevision: 0.16.9
+    helm:
+      releaseName: immich-redis
+      valuesObject:
+        storageSpec:
+          volumeClaimTemplate:
+            spec:
+              accessModes:
+                - ReadWriteOnce
+              storageClassName: longhorn-nvme-3-replicas
+              resources:
+                requests:
+                  storage: 200Mi
+
+        externalConfig:
+          enabled: true
+          data: ""
+
+        redisExporter:
+          enabled: true
+
+        serviceMonitor:
+          enabled: true
   destination:
     name: in-cluster
     namespace: media
