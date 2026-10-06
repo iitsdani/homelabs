@@ -9,7 +9,6 @@ resources:
   - immich-ml-cache-v3.yaml
   - immich-cnpg-cluster.yaml
   - machine-learning-application.yaml
-  - redis-application.yaml
 
 generators:
   - ksops.yaml
