@@ -1,0 +1,20 @@
+---
+storageSpec:
+  volumeClaimTemplate:
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      storageClassName: longhorn-nvme-3-replicas
+      resources:
+        requests:
+          storage: 200Mi
+
+externalConfig:
+  enabled: true
+  data: ""
+
+redisExporter:
+  enabled: true
+
+serviceMonitor:
+  enabled: true
