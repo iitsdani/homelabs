@@ -32,7 +32,7 @@
       data:
         # Coordinates from the Vacuum Map
         # Source: https://github.com/PiotrMachowski/lovelace-xiaomi-vacuum-map-card/blob/master/docs/templates/setup.md#getting-coordinates
-        zone: [[-1940, 2220, -14, 4091]]
+        zone: "{{ states('input_text.litter_robot_vacuum_zone') | from_json }}"
         repeats: 2
         suction_level: 1 # Standard
 

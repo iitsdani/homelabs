@@ -86,6 +86,12 @@ input_button:
     name: Litter Robot bag changed
     icon: mdi:trash-can
 
+input_text:
+  litter_robot_vacuum_zone:
+    name: Litter Robot vacuum zone
+    icon: mdi:map-marker-radius
+    max: 255
+
 input_number:
   litter_robot_waste_drawer_level_notification:
     name: Litter Robot waste drawer fill percentage notification
