@@ -1,0 +1,46 @@
+---
+# yaml-language-server: $schema=https://www.schemastore.org/kustomization.json
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - https://github.com/pl4nty/cloudflare-kubernetes-gateway//config/default?ref=v0.10.1
+  - metrics.yaml
+  - gatewayclass.yaml
+  - gateway.yaml
+  - cloudflared-config.yaml
+
+generators:
+  - ksops.yaml
+
+patches:
+  - target:
+      namespace: cloudflare-gateway
+    patch: |-
+      - op: replace
+        path: /metadata/namespace
+        value: networking
+  - target:
+      kind: (ClusterRoleBinding|RoleBinding)
+    patch: |-
+      - op: replace
+        path: /subjects/0/namespace
+        value: networking
+      - op: replace
+        path: /subjects/0/name
+        value: cloudflare-controller-manager
+  - target:
+      kind: Namespace
+    patch: |-
+      $patch: delete
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: unused
+  - target:
+      kind: Deployment
+      name: cloudflare-controller-manager
+    patch: |-
+      - op: add
+        path: /spec/template/spec/containers/0/args/-
+        value: --cluster-resource-namespace=networking

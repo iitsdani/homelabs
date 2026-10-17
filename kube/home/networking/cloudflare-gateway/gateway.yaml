@@ -1,0 +1,20 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: cianfr-one-tunnel
+  namespace: networking
+spec:
+  gatewayClassName: cloudflare-cianfr-one
+  infrastructure:
+    parametersRef:
+      group: ""
+      kind: ConfigMap
+      name: cianfr-one-tunnel-config
+  listeners:
+    - name: http
+      protocol: HTTP
+      port: 80
+      allowedRoutes:
+        namespaces:
+          from: Same

@@ -1,0 +1,34 @@
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMServiceScrape
+metadata:
+  name: cloudflare-gateway-controller
+  namespace: networking
+spec:
+  namespaceSelector:
+    matchNames:
+      - networking
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: cloudflare-kubernetes-gateway
+      control-plane: controller-manager
+  endpoints:
+    - port: http
+      path: /metrics
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMServiceScrape
+metadata:
+  name: cloudflare-gateway-tunnels
+  namespace: networking
+spec:
+  namespaceSelector:
+    matchNames:
+      - networking
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: cloudflare-kubernetes-gateway
+      control-plane: image
+  endpoints:
+    - port: http
+      path: /metrics

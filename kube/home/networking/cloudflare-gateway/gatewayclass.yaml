@@ -1,0 +1,12 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: GatewayClass
+metadata:
+  name: cloudflare-cianfr-one
+spec:
+  controllerName: github.com/pl4nty/cloudflare-kubernetes-gateway
+  parametersRef:
+    group: ""
+    kind: Secret
+    namespace: networking
+    name: cloudflare-cianfr-one-credentials
