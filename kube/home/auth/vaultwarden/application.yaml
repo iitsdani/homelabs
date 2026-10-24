@@ -154,15 +154,42 @@ spec:
           main:
             enabled: true
             kind: HTTPRoute
-            annotations:
-              external-dns.alpha.kubernetes.io/hostname: vault.cianfr.one
+            forceRename: vaultwarden
             hostnames:
               - vault.cianfr.one
             parentRefs:
-              - name: external-gw
+              - name: cianfr-one-tunnel
+                namespace: networking
+                sectionName: http
+            rules:
+              - matches:
+                  - path:
+                      type: PathPrefix
+                      value: /
+                backendRefs:
+                  - identifier: main
+                    port: http
+          admin:
+            enabled: true
+            kind: HTTPRoute
+            hostnames:
+              - vault-admin.home.cianfr.one
+            parentRefs:
+              - name: internal-gw
                 namespace: networking
                 sectionName: https
             rules:
+              - matches:
+                  - path:
+                      type: Exact
+                      value: /
+                filters:
+                  - type: RequestRedirect
+                    requestRedirect:
+                      path:
+                        type: ReplaceFullPath
+                        replaceFullPath: /admin
+                      statusCode: 302
               - matches:
                   - path:
                       type: PathPrefix
