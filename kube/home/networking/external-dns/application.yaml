@@ -26,6 +26,8 @@ spec:
         sources:
           - ingress
           - gateway-httproute
+        extraArgs:
+          gateway-label-filter: external-dns.cianfr.one/enabled=true
         env:
           - name: CF_API_TOKEN
             valueFrom:
