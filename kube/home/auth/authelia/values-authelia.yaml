@@ -2,16 +2,14 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/authelia/chartrepo/refs/heads/master/charts/authelia/values.schema.json
 ingress:
   enabled: true
-  annotations:
-    external-dns.alpha.kubernetes.io/hostname: idp.cianfr.one
   gatewayAPI:
     enabled: true
     hostnamesOverride:
       - idp.cianfr.one
     parentRefs:
-      - name: external-gw
+      - name: cianfr-one-tunnel
         namespace: networking
-        sectionName: https
+        sectionName: http
   traefikCRD: { enabled: false, disableIngressRoute: true }
 
 pod:
