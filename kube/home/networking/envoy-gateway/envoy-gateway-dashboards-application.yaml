@@ -1,0 +1,45 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: envoy-gateway-dashboards
+  namespace: argo-system
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: oci://registry-1.docker.io/envoyproxy/gateway-addons-helm
+    path: .
+    targetRevision: v1.8.2
+    helm:
+      releaseName: envoy-gateway-dashboards
+      valuesObject:
+        dashboard:
+          labels:
+            grafana_dashboard: "1"
+        grafana:
+          enabled: false
+        prometheus:
+          enabled: false
+        fluent-bit:
+          enabled: false
+        loki:
+          enabled: false
+        tempo:
+          enabled: false
+        alloy:
+          enabled: false
+        opentelemetry-collector:
+          enabled: false
+  destination:
+    name: in-cluster
+    namespace: telemetry
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - ServerSideApply=true
+      - ApplyOutOfSyncOnly=true
+      - SkipDryRunOnMissingResource=true

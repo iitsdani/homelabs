@@ -6,6 +6,7 @@ kind: Kustomization
 resources:
   - envoy-gateway-crds-application.yaml
   - envoy-gateway-controller-application.yaml
+  - envoy-gateway-dashboards-application.yaml
   - gatewayclass.yaml
   - external-gw-envoyproxy.yaml
   - external-gw-certificate.yaml
