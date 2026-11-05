@@ -6,6 +6,8 @@ kind: Kustomization
 resources:
   - application.yaml
   - immich-library-v4.yaml
+  - immich-library-v5.yaml
+  - immich-external-library-v1.yaml
   - immich-ml-cache-v3.yaml
   - immich-cnpg-cluster.yaml
   - machine-learning-application.yaml

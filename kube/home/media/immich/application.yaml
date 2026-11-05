@@ -158,14 +158,13 @@ spec:
               - path: /external/videos
                 readOnly: true
           external-library:
-            type: nfs
-            server: truenas.home.arpa
-            path: /mnt/pool0/gallery/external
+            type: persistentVolumeClaim
+            existingClaim: immich-external-library-v1
             globalMounts:
               - path: /external/library
           library:
             type: persistentVolumeClaim
-            existingClaim: immich-library-v4
+            existingClaim: immich-library-v5
             globalMounts:
               - path: /usr/src/app/upload
               - path: /imported
