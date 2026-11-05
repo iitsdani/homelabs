@@ -155,9 +155,10 @@ spec:
               - path: /data
           media-videos:
             type: persistentVolumeClaim
-            existingClaim: media-videos-v1
+            existingClaim: media-videos-v2
             globalMounts:
               - path: /videos
+                readOnly: true
           media:
             type: emptyDir
             globalMounts:

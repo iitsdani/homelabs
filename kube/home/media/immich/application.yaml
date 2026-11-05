@@ -153,9 +153,10 @@ spec:
                 readOnly: true
           external-videos:
             type: persistentVolumeClaim
-            existingClaim: media-videos-v1
+            existingClaim: media-videos-v2
             globalMounts:
               - path: /external/videos
+                readOnly: true
           external-library:
             type: nfs
             server: truenas.home.arpa
