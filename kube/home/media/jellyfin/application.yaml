@@ -9,84 +9,164 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://jellyfin.github.io/jellyfin-helm
-    chart: jellyfin
-    targetRevision: 3.2.0
+    repoURL: https://bjw-s-labs.github.io/helm-charts
+    chart: app-template
+    targetRevision: 5.1.0
     helm:
       releaseName: *name
       valuesObject:
-        image:
-          repository: docker.io/jellyfin/jellyfin
-          tag: 10.11.11@sha256:aefb67e6a7ff1debdd154a78a7bbb780fd0c873d8639210a7f6a2016ad2b35db
+        global:
+          nameOverride: jellyfin
 
-        replicaCount: 1
-        deploymentStrategy:
-          type: Recreate # Using RWO backing volume.
+        defaultPodOptions:
+          labels:
+            storage.cianfr.one/nas: "true"
+            storage.cianfr.one/longhorn: "true"
+          automountServiceAccountToken: true
+          enableServiceLinks: true
+          terminationGracePeriodSeconds: 30
+          securityContext:
+            fsGroup: 1000
+            fsGroupChangePolicy: OnRootMismatch
+            runAsGroup: 1000
+            runAsUser: 1000
+          affinity:
+            nodeAffinity:
+              preferredDuringSchedulingIgnoredDuringExecution:
+                - weight: 100
+                  preference:
+                    matchExpressions:
+                      - key: cianfr.one/gpu.transcoding.speed
+                        operator: In
+                        values:
+                          - fast
+                - weight: 50
+                  preference:
+                    matchExpressions:
+                      - key: cianfr.one/gpu.transcoding.speed
+                        operator: In
+                        values:
+                          - medium
 
-        podSecurityContext:
-          fsGroup: 1000
-          fsGroupChangePolicy: OnRootMismatch
-          runAsGroup: 1000
-          runAsUser: 1000
+        serviceAccount:
+          main:
+            forceRename: jellyfin
+            automountServiceAccountToken: true
 
-        podAnnotations:
-          reloader.stakater.com/auto: "true"
+        controllers:
+          main:
+            type: deployment
+            forceRename: jellyfin-main
+            # Start only after ArgoCD prunes the old jellyfin Deployment and its Pods terminate.
+            replicas: 0
+            revisionHistoryLimit: 3
+            strategy: Recreate
+            serviceAccount:
+              identifier: main
+            labels:
+              storage.cianfr.one/nas: "true"
+              storage.cianfr.one/longhorn: "true"
+            annotations:
+              reloader.stakater.com/auto: "true"
+            containers:
+              jellyfin:
+                image:
+                  repository: docker.io/jellyfin/jellyfin
+                  tag: 10.11.11@sha256:aefb67e6a7ff1debdd154a78a7bbb780fd0c873d8639210a7f6a2016ad2b35db
+                  pullPolicy: IfNotPresent
+                ports:
+                  - name: http
+                    containerPort: 8096
+                    protocol: TCP
+                resources:
+                  limits:
+                    gpu.intel.com/i915: "1"
+                  requests:
+                    gpu.intel.com/i915: "1"
+                probes:
+                  liveness: &health-probe
+                    enabled: true
+                    custom: true
+                    spec:
+                      httpGet:
+                        path: /health
+                        port: http
+                        scheme: HTTP
+                      initialDelaySeconds: 10
+                      periodSeconds: 10
+                      timeoutSeconds: 1
+                      successThreshold: 1
+                      failureThreshold: 3
+                  readiness: *health-probe
+                  startup:
+                    enabled: true
+                    custom: true
+                    spec:
+                      tcpSocket:
+                        port: http
+                      initialDelaySeconds: 0
+                      periodSeconds: 10
+                      timeoutSeconds: 1
+                      successThreshold: 1
+                      failureThreshold: 30
 
-        affinity:
-          nodeAffinity:
-            preferredDuringSchedulingIgnoredDuringExecution:
-              - weight: 100
-                preference:
-                  matchExpressions:
-                    - key: cianfr.one/gpu.transcoding.speed
-                      operator: In
-                      values:
-                        - fast
-              - weight: 50
-                preference:
-                  matchExpressions:
-                    - key: cianfr.one/gpu.transcoding.speed
-                      operator: In
-                      values:
-                        - medium
+        service:
+          main:
+            forceRename: jellyfin
+            controller: main
+            type: ClusterIP
+            ports:
+              http:
+                port: 8096
+                targetPort: http
+                primary: true
 
-        httpRoute:
-          enabled: true
-          annotations:
-            external-dns.alpha.kubernetes.io/hostname: media.cianfr.one
-          hostnames:
-            - media.cianfr.one
-          parentRefs:
-            - name: external-gw
-              namespace: networking
-              sectionName: https
-
-        resources:
-          limits:
-            gpu.intel.com/i915: "1"
-          requests:
-            gpu.intel.com/i915: "1"
-
-        volumes:
-          - name: media-data
-            persistentVolumeClaim:
-              claimName: media-data-v4
-          - name: media-videos
-            persistentVolumeClaim:
-              claimName: media-videos-v1
-
-        volumeMounts:
-          - name: media-data
-            mountPath: /data
-          - name: media-videos
-            mountPath: /videos
+        route:
+          main:
+            forceRename: jellyfin
+            enabled: true
+            kind: HTTPRoute
+            annotations:
+              external-dns.alpha.kubernetes.io/hostname: media.cianfr.one
+            hostnames:
+              - media.cianfr.one
+            parentRefs:
+              - name: external-gw
+                namespace: networking
+                sectionName: https
+            rules:
+              - matches:
+                  - path:
+                      type: PathPrefix
+                      value: /
+                backendRefs:
+                  - identifier: main
+                    port: http
 
         persistence:
           config:
-            enabled: true
+            type: persistentVolumeClaim
             existingClaim: jellyfin-config-v2
+            globalMounts:
+              - path: /config
+          media-data:
+            type: persistentVolumeClaim
+            existingClaim: media-data-v4
+            globalMounts:
+              - path: /data
+          media-videos:
+            type: persistentVolumeClaim
+            existingClaim: media-videos-v1
+            globalMounts:
+              - path: /videos
           media:
-            enabled: false # Managed separately and manually.
+            type: emptyDir
+            globalMounts:
+              - path: /media
+          cache:
+            type: emptyDir
+            globalMounts:
+              - path: /cache
   destination:
     name: in-cluster
     namespace: media
