@@ -17,9 +17,15 @@ spec:
     helm:
       releaseName: music-assistant
       valuesObject:
+        defaultPodOptions:
+          labels:
+            storage.cianfr.one/longhorn: "true"
+
         controllers:
           main:
             type: deployment
+            labels:
+              storage.cianfr.one/longhorn: "true"
             replicas: 1
             annotations:
               reloader.stakater.com/auto: "true"

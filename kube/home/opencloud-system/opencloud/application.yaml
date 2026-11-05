@@ -18,6 +18,8 @@ spec:
       releaseName: opencloud
       valuesObject:
         defaultPodOptions:
+          labels:
+            storage.cianfr.one/nas: "true"
           securityContext:
             fsGroup: 1000
             fsGroupChangePolicy: OnRootMismatch
@@ -99,6 +101,8 @@ spec:
         controllers:
           main:
             type: deployment
+            labels:
+              storage.cianfr.one/nas: "true"
             replicas: 1
             strategy: RollingUpdate
             annotations:

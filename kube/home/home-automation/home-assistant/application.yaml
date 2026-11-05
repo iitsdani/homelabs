@@ -18,11 +18,15 @@ spec:
       releaseName: home-assistant
       valuesObject:
         defaultPodOptions:
+          labels:
+            storage.cianfr.one/longhorn: "true"
           hostNetwork: true
 
         controllers:
           main:
             type: deployment
+            labels:
+              storage.cianfr.one/longhorn: "true"
             replicas: 1
             annotations:
               reloader.stakater.com/auto: "true"

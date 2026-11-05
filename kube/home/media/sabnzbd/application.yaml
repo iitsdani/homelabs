@@ -18,6 +18,9 @@ spec:
       releaseName: sabnzbd
       valuesObject:
         defaultPodOptions:
+          labels:
+            storage.cianfr.one/nas: "true"
+            storage.cianfr.one/longhorn: "true"
           securityContext:
             fsGroup: 1000
             fsGroupChangePolicy: OnRootMismatch
@@ -61,6 +64,9 @@ spec:
         controllers:
           main:
             type: deployment
+            labels:
+              storage.cianfr.one/nas: "true"
+              storage.cianfr.one/longhorn: "true"
             replicas: 1
             strategy: Recreate
             annotations:

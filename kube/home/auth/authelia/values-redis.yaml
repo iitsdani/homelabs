@@ -2,6 +2,9 @@
 # Redis Standalone Configuration for Immich
 # Ref: https://github.com/OT-CONTAINER-KIT/redis-operator/tree/main/charts/redis
 
+labels:
+  storage.cianfr.one/longhorn: "true"
+
 redisStandalone:
   resources:
     requests: &requests

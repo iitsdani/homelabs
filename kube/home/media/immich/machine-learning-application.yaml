@@ -18,6 +18,8 @@ spec:
       releaseName: immich-machine-learning
       valuesObject:
         defaultPodOptions:
+          labels:
+            storage.cianfr.one/longhorn: "true"
           affinity:
             nodeAffinity:
               requiredDuringSchedulingIgnoredDuringExecution:
@@ -39,6 +41,8 @@ spec:
         controllers:
           main:
             type: deployment
+            labels:
+              storage.cianfr.one/longhorn: "true"
             replicas: 1
             strategy: Recreate
             annotations:

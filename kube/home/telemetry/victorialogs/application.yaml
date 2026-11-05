@@ -19,6 +19,10 @@ spec:
       skipCrds: false
       valuesObject:
         server:
+          extraLabels:
+            storage.cianfr.one/longhorn: "true"
+          podLabels:
+            storage.cianfr.one/longhorn: "true"
           enabled: true
           image:
             repository: docker.io/victoriametrics/victoria-logs

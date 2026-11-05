@@ -4,6 +4,8 @@ kind: RecurringJob
 metadata:
   name: backup-24h
   namespace: longhorn-system
+  labels:
+    storage.cianfr.one/nas: "true"
   annotations:
     argocd.argoproj.io/sync-wave: "1"
 spec:

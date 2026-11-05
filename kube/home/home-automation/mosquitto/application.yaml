@@ -18,6 +18,8 @@ spec:
       releaseName: mosquitto
       valuesObject:
         defaultPodOptions:
+          labels:
+            storage.cianfr.one/longhorn: "true"
           securityContext:
             runAsNonRoot: true
             runAsUser: 1883
@@ -30,6 +32,8 @@ spec:
         controllers:
           main:
             type: deployment
+            labels:
+              storage.cianfr.one/longhorn: "true"
             replicas: 1
             strategy: Recreate
             annotations:

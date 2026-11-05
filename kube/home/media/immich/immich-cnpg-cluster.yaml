@@ -4,9 +4,14 @@ kind: Cluster
 metadata:
   name: immich-cnpg-cluster
   namespace: media
+  labels:
+    storage.cianfr.one/longhorn: "true"
   # annotations:
   #   cnpg.io/hibernation: "on"
 spec:
+  inheritedMetadata:
+    labels:
+      storage.cianfr.one/longhorn: "true"
   # A bug was reported in v0.3.0, which does not allow a replicated setup:
   # https://github.com/immich-app/immich-charts/issues/149#issuecomment-2559012759
   instances: 1

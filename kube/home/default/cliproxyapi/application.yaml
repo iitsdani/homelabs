@@ -18,6 +18,8 @@ spec:
       releaseName: cliproxyapi
       valuesObject:
         defaultPodOptions:
+          labels:
+            storage.cianfr.one/longhorn: "true"
           automountServiceAccountToken: false
           securityContext:
             runAsNonRoot: true
@@ -31,6 +33,8 @@ spec:
         controllers:
           main:
             type: deployment
+            labels:
+              storage.cianfr.one/longhorn: "true"
             replicas: 1
             strategy: Recreate
             annotations:

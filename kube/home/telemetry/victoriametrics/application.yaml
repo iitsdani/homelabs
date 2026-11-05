@@ -35,8 +35,13 @@ spec:
             replicaCount: 1
 
         vmsingle:
+          labels:
+            storage.cianfr.one/longhorn: "true"
           enabled: true
           spec:
+            podMetadata:
+              labels:
+                storage.cianfr.one/longhorn: "true"
             retentionPeriod: 8w
             storage:
               storageClassName: longhorn-nvme-3-replicas

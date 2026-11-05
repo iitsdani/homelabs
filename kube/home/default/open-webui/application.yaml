@@ -17,6 +17,10 @@ spec:
     helm:
       releaseName: open-webui
       valuesObject:
+        extraLabels:
+          storage.cianfr.one/longhorn: "true"
+        podLabels:
+          storage.cianfr.one/longhorn: "true"
         annotations:
           reloader.stakater.com/auto: "true"
         ollama:

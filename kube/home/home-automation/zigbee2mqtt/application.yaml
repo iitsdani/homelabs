@@ -17,6 +17,9 @@ spec:
     helm:
       releaseName: zigbee2mqtt
       valuesObject:
+        customLabels:
+          storage.cianfr.one/longhorn: "true"
+
         ingress:
           enabled: false
 

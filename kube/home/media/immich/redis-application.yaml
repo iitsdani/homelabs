@@ -17,6 +17,9 @@ spec:
     helm:
       releaseName: immich-redis
       valuesObject:
+        labels:
+          storage.cianfr.one/longhorn: "true"
+
         storageSpec:
           volumeClaimTemplate:
             spec:

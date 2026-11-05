@@ -18,6 +18,9 @@ spec:
       releaseName: prowlarr
       valuesObject:
         defaultPodOptions:
+          labels:
+            storage.cianfr.one/nas: "true"
+            storage.cianfr.one/longhorn: "true"
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
@@ -58,6 +61,9 @@ spec:
         controllers:
           main:
             type: deployment
+            labels:
+              storage.cianfr.one/nas: "true"
+              storage.cianfr.one/longhorn: "true"
             replicas: 1
             strategy: Recreate
             annotations:

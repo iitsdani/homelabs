@@ -58,6 +58,8 @@ spec:
               ICON_REDIRECT_CODE: "302"
 
         defaultPodOptions:
+          labels:
+            storage.cianfr.one/longhorn: "true"
           securityContext:
             fsGroup: 65534
             fsGroupChangePolicy: OnRootMismatch
@@ -68,6 +70,8 @@ spec:
         controllers:
           main:
             type: deployment
+            labels:
+              storage.cianfr.one/longhorn: "true"
             replicas: 1
             strategy: Recreate
             annotations:
