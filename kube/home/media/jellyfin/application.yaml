@@ -57,8 +57,7 @@ spec:
           main:
             type: deployment
             forceRename: jellyfin-main
-            # Start only after ArgoCD prunes the old jellyfin Deployment and its Pods terminate.
-            replicas: 0
+            replicas: 1
             revisionHistoryLimit: 3
             strategy: Recreate
             serviceAccount:
