@@ -1,0 +1,160 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: peanut
+  namespace: argo-system
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://bjw-s-labs.github.io/helm-charts
+    chart: app-template
+    targetRevision: 5.1.0
+    helm:
+      releaseName: peanut
+      valuesObject:
+        defaultPodOptions:
+          labels:
+            storage.cianfr.one/longhorn: "true"
+          automountServiceAccountToken: false
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            fsGroup: 1000
+            fsGroupChangePolicy: OnRootMismatch
+            seccompProfile:
+              type: RuntimeDefault
+
+        controllers:
+          main:
+            type: deployment
+            labels:
+              storage.cianfr.one/longhorn: "true"
+            replicas: 1
+            strategy: Recreate
+            annotations:
+              reloader.stakater.com/auto: "true"
+            containers:
+              main:
+                image:
+                  repository: brandawg93/peanut
+                  tag: 6.1.2
+                env:
+                  TZ: Europe/Amsterdam
+                  WEB_HOST: 0.0.0.0
+                  WEB_PORT: "8080"
+                  NUT_SERVERS: '[{"HOST":"10.0.2.1","PORT":3493}]'
+                  DATE_FORMAT: DD/MM/YYYY
+                  TIME_FORMAT: 24-hour
+                  WEB_USERNAME:
+                    valueFrom:
+                      secretKeyRef:
+                        name: peanut-secrets
+                        key: username
+                  WEB_PASSWORD:
+                    valueFrom:
+                      secretKeyRef:
+                        name: peanut-secrets
+                        key: password
+                  AUTH_SECRET:
+                    valueFrom:
+                      secretKeyRef:
+                        name: peanut-secrets
+                        key: auth-secret
+                probes:
+                  liveness: &probe
+                    enabled: true
+                    custom: true
+                    spec:
+                      httpGet:
+                        path: /api/ping
+                        port: 8080
+                      periodSeconds: 10
+                      timeoutSeconds: 5
+                  readiness: *probe
+                  startup:
+                    enabled: true
+                    custom: true
+                    spec:
+                      httpGet:
+                        path: /api/ping
+                        port: 8080
+                      periodSeconds: 5
+                      timeoutSeconds: 5
+                      failureThreshold: 30
+                resources:
+                  requests:
+                    cpu: 50m
+                    memory: 128Mi
+                  limits:
+                    memory: 512Mi
+                securityContext:
+                  allowPrivilegeEscalation: false
+                  capabilities:
+                    drop: [ALL]
+
+        service:
+          main:
+            controller: main
+            ports:
+              http:
+                port: 8080
+
+        route:
+          internal-gw:
+            enabled: true
+            kind: HTTPRoute
+            hostnames: [peanut.home.cianfr.one]
+            parentRefs:
+              - name: internal-gw
+                namespace: networking
+                sectionName: https
+            rules:
+              - matches:
+                  - path: { type: PathPrefix, value: / }
+                backendRefs:
+                  - identifier: main
+                    port: http
+
+        serviceMonitor:
+          main:
+            serviceName: peanut
+            endpoints:
+              - port: http
+                path: /api/v1/metrics
+                interval: 30s
+                scrapeTimeout: 25s
+                basicAuth:
+                  username:
+                    name: peanut-secrets
+                    key: username
+                  password:
+                    name: peanut-secrets
+                    key: password
+
+        persistence:
+          config:
+            type: persistentVolumeClaim
+            existingClaim: peanut-data
+            globalMounts:
+              - path: /config
+          tmp:
+            type: emptyDir
+            globalMounts:
+              - path: /tmp
+  destination:
+    name: in-cluster
+    namespace: default
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - ServerSideApply=true
+      - ApplyOutOfSyncOnly=true
+      - SkipDryRunOnMissingResource=true
