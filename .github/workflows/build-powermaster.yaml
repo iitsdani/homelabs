@@ -1,0 +1,75 @@
+---
+name: Build PowerMaster
+
+on: # yamllint disable-line rule:truthy
+  workflow_dispatch: {}
+  pull_request:
+    branches: [main]
+    paths:
+      - containers/powermaster/**
+      - .github/workflows/build-powermaster.yaml
+  push:
+    branches: [main]
+    paths:
+      - containers/powermaster/**
+      - .github/workflows/build-powermaster.yaml
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
+
+      - name: Image metadata
+        id: metadata
+        uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/powermaster
+          tags: |
+            type=sha,format=long
+
+      - name: Check shell scripts
+        run: shellcheck containers/powermaster/*.sh
+
+      - name: Log in to GHCR
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and publish image
+        id: publish
+        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
+        with:
+          context: containers/powermaster
+          platforms: linux/amd64
+          push: ${{ github.ref == 'refs/heads/main' && github.event_name != 'pull_request' }}
+          tags: ${{ steps.metadata.outputs.tags }}
+          labels: ${{ steps.metadata.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Summarize published image
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && steps.publish.outcome == 'success'
+        env:
+          IMAGE: ${{ steps.metadata.outputs.tags }}
+          DIGEST: ${{ steps.publish.outputs.digest }}
+        run: |
+          printf 'Published image: %s\n\nDigest: %s\n' "$IMAGE" "$DIGEST" >> "$GITHUB_STEP_SUMMARY"
