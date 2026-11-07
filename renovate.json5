@@ -49,7 +49,7 @@
     // Helm charts defined in K3s bootstrap manifests.
     {
       customType: "regex",
-      managerFilePatterns: ["/^modules/k3s/manifests/[^/]+\\.yaml$/"],
+      managerFilePatterns: ["/^modules/k3s/bootstrap/manifests/[^/]+\\.yaml$/"],
       datasourceTemplate: "helm",
       matchStrings: [
         '\\s+repo:\\s+(?<registryUrl>https?://\\S+)\\s+chart:\\s+(?<depName>[\\w.\\-]+)\\s+version:\\s+["\']?(?<currentValue>[\\w+\\.\\-]+)["\']?',

@@ -1,21 +1,19 @@
+{ lib, ... }:
+
 {
   imports = [
     ./server.nix
     ./argocd.nix
     ./tailscale.nix
+    ./bootstrap
   ];
 
   services.k3s.role = "server";
   services.k3s.clusterInit = true;
-  services.k3s.manifests =
-    let
-      dir = ./manifests;
-      files = builtins.attrNames (builtins.readDir dir);
-    in
-    builtins.listToAttrs (map
-      (filename: {
-        name = builtins.replaceStrings [ ".yaml" ] [ "" ] filename; # Strips the suffix.
-        value = { enable = true; source = ./. + "/manifests/${filename}"; };
-      })
-      files);
+  services.k3s.manifests = lib.mapAttrs'
+    (filename: _: lib.nameValuePair (lib.removeSuffix ".yaml" filename) {
+      enable = true;
+      source = ./manifests + "/${filename}";
+    })
+    (builtins.readDir ./manifests);
 }

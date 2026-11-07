@@ -2,6 +2,8 @@
 apiVersion: helm.cattle.io/v1
 kind: HelmChart
 metadata:
+  annotations:
+    bootstrap.homelabs/required-secrets: argocd-ksops-age-keys argocd-homelab-repo
   name: argocd
   namespace: kube-system
 spec:

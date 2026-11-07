@@ -30,6 +30,7 @@
     nixos-hardware.nixosModules.common-cpu-intel
     nixos-hardware.nixosModules.common-gpu-intel
     ../../modules/server.nix
+    ../../modules/iot-lan-route.nix
     ../../modules/aarch64-cross-compile.nix
     ../../modules/intel-gpu-hwaccel.nix
     ../../modules/k3s/server-main.nix

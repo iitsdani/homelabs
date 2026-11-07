@@ -20,6 +20,6 @@
     };
   };
 
-  # Tailscale operator is deployed via a static HelmChart manifest in
-  # manifests/03-tailscale-operator.yaml with bootstrap=true.
+  # bootstrap/default.nix creates the HelmChart only when absent; ArgoCD then tracks
+  # bootstrap/manifests/02-tailscale-operator.yaml.
 }

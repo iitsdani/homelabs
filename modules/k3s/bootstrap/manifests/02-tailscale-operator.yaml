@@ -2,6 +2,8 @@
 apiVersion: helm.cattle.io/v1
 kind: HelmChart
 metadata:
+  annotations:
+    bootstrap.homelabs/required-secrets: operator-oauth
   name: tailscale-operator
   namespace: kube-system
 spec:

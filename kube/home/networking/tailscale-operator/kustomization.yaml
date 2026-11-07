@@ -5,4 +5,4 @@ kind: Kustomization
 
 # Track the bootstrap manifest in ArgoCD while the K3s Helm controller manages the release.
 resources:
-  - ../../../../modules/k3s/manifests/02-tailscale-operator.yaml
+  - ../../../../modules/k3s/bootstrap/manifests/02-tailscale-operator.yaml

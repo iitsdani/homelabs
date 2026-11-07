@@ -27,6 +27,7 @@
   imports = [
     nixos-hardware.nixosModules.lenovo-thinkpad-x270
     ../../modules/server.nix
+    ../../modules/iot-lan-route.nix
     ../../modules/aarch64-cross-compile.nix
     ../../modules/intel-gpu-hwaccel.nix
     ../../modules/k3s/server-join.nix

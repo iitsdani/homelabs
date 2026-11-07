@@ -13,7 +13,7 @@
     path = "/var/lib/rancher/k3s/server/manifests/10-argocd-homelab-repo.yaml";
   };
 
-  # ArgoCD itself is deployed via a static HelmChart manifest in
-  # manifests/04-argocd.yaml. The ApplicationSet resources that discover
+  # bootstrap/default.nix creates the HelmChart only when absent; ArgoCD then tracks
+  # bootstrap/manifests/04-argocd.yaml. The ApplicationSet resources that discover
   # kube/home/* are defined in manifests/11-argocd-homelab-kube-application-set.yaml.
 }
