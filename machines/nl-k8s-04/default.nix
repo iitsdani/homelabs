@@ -9,6 +9,7 @@
   # deployment.targetHost = "10.0.1.4";
   deployment.targetUser = "root";
   deployment.tags = [ "type-server" "k8s-agent" "zone-home" ];
+  deployment.buildOnTarget = true;
 
   nixpkgs.system = "x86_64-linux";
 
