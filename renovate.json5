@@ -46,12 +46,15 @@
       datasourceTemplate: "docker",
       matchStrings: ['\\s*repository:\\s+"*(?<depName>.*?)"*\\s*tag:\\s+"*(?<currentValue>[\\w+\\.\\-]*)(@(?<currentDigest>sha256:[a-f0-9]+))?"*'],
     },
-    // Helm charts defined in Nix files.
+    // Helm charts defined in K3s bootstrap manifests.
     {
       customType: "regex",
-      managerFilePatterns: ["/(^|/)*\\.nix$/"],
+      managerFilePatterns: ["/^modules/k3s/manifests/[^/]+\\.yaml$/"],
       datasourceTemplate: "helm",
-      matchStrings: ['\\s*name\\s+=\\s+"*(?<depName>.*?)";*\\s*repo\\s+=\\s+"*(?<registryUrl>.*?)";*\\s*version\\s+=\\s+"*(?<currentValue>[\\w+\\.\\-]*)"*'],
+      matchStrings: [
+        '\\s+repo:\\s+(?<registryUrl>https?://\\S+)\\s+chart:\\s+(?<depName>[\\w.\\-]+)\\s+version:\\s+["\']?(?<currentValue>[\\w+\\.\\-]+)["\']?',
+        '\\s+name:\\s+&name\\s+(?<depName>[\\w.\\-]+)[\\s\\S]*?\\s+repo:\\s+(?<registryUrl>https?://\\S+)\\s+chart:\\s+\\*name\\s+version:\\s+["\']?(?<currentValue>[\\w+\\.\\-]+)["\']?',
+      ],
     },
   ],
 }
