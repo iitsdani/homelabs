@@ -24,7 +24,6 @@ spec:
           podLabels:
             storage.cianfr.one/longhorn: "true"
           enabled: true
-          replicaCount: 0
           image:
             repository: docker.io/victoriametrics/victoria-logs
             pullPolicy: IfNotPresent

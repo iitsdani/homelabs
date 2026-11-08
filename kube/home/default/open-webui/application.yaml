@@ -37,7 +37,7 @@ spec:
           manager: ""
           redis:
             enabled: false
-        replicaCount: 0
+        replicaCount: 1
         image:
           repository: ghcr.io/open-webui/open-webui
           tag: v0.13.2

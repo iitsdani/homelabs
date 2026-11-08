@@ -72,7 +72,7 @@ spec:
             type: deployment
             labels:
               storage.cianfr.one/longhorn: "true"
-            replicas: 0
+            replicas: 1
             strategy: Recreate
             annotations:
               reloader.stakater.com/auto: "true"

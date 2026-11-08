@@ -27,7 +27,7 @@ spec:
             type: deployment
             labels:
               storage.cianfr.one/longhorn: "true"
-            replicas: 0
+            replicas: 1
             annotations:
               reloader.stakater.com/auto: "true"
             containers:

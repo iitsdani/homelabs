@@ -14,8 +14,6 @@ spec:
     targetRevision: 0.24.0
     helm:
       releaseName: redis-operator
-      valuesObject:
-        replicas: 0
   destination:
     name: in-cluster
     namespace: redis-system

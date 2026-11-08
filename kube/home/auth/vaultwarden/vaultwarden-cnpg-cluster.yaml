@@ -8,7 +8,6 @@ metadata:
     storage.cianfr.one/longhorn: "true"
   annotations:
     argocd.argoproj.io/sync-wave: "1"
-    cnpg.io/hibernation: "on"
 spec:
   inheritedMetadata:
     labels:
