@@ -39,6 +39,7 @@ spec:
             storage.cianfr.one/longhorn: "true"
           enabled: true
           spec:
+            paused: true
             podMetadata:
               labels:
                 storage.cianfr.one/longhorn: "true"
