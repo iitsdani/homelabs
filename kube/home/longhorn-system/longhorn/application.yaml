@@ -13,7 +13,7 @@ spec:
   source:
     repoURL: https://charts.longhorn.io
     chart: longhorn
-    targetRevision: 1.11.3
+    targetRevision: 1.12.1
     helm:
       releaseName: longhorn
       valuesObject:
@@ -26,9 +26,13 @@ spec:
             enabled: true
         ingress:
           enabled: false
+        networkPolicies:
+          restrictInternalTraffic: false
         defaultSettings:
           v1DataEngine: false
           v2DataEngine: true
+          dataEngineCPUMask: '{"v2":"0x3"}'
+          dataEngineInterruptModeEnabled: '{"v2":"true"}'
           defaultDataLocality: best-effort
           storageMinimalAvailablePercentage: "10"
           allowVolumeCreationWithDegradedAvailability: false
