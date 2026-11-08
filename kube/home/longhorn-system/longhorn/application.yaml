@@ -28,11 +28,15 @@ spec:
           enabled: false
         networkPolicies:
           restrictInternalTraffic: false
+        persistence:
+          defaultClass: false
         defaultSettings:
           v1DataEngine: false
           v2DataEngine: true
           dataEngineCPUMask: '{"v2":"0x3"}'
           dataEngineInterruptModeEnabled: '{"v2":"true"}'
+          guaranteedInstanceManagerCPU: '{"v1":"12","v2":"40"}'
+          defaultNvmeTcpNrIoQueues: '{"v2":"2"}'
           defaultDataLocality: best-effort
           storageMinimalAvailablePercentage: "10"
           allowVolumeCreationWithDegradedAvailability: false

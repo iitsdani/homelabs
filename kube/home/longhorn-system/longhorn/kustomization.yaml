@@ -17,6 +17,7 @@ resources:
   - storageClasses/nvme-encrypted-3-replicas.yaml
   - recurringJobs/backup-24h.yaml
   - recurringJobs/snapshot-6h.yaml
+  - recurringJobs/trim-weekly.yaml
 
 generators:
   - ksops.yaml
