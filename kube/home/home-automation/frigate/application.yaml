@@ -115,7 +115,7 @@ spec:
           go2rtc:
             streams:
               e1-zoom-01:
-                - rtsp://{FRIGATE_E1_ZOOM_01_RTSP_USERNAME}:{FRIGATE_E1_ZOOM_01_RTSP_PASSWORD}@{FRIGATE_E1_ZOOM_01_HOST}/h264Preview_01_main
+                - "ffmpeg:http://{FRIGATE_E1_ZOOM_01_HOST}/flv?port=1935&app=bcs&stream=channel0_main.bcs&user={FRIGATE_E1_ZOOM_01_RTSP_USERNAME}&password={FRIGATE_E1_ZOOM_01_RTSP_PASSWORD}#video=copy#audio=copy"
                 - "ffmpeg:e1-zoom-01#audio=opus"
               e1-zoom-01-sub:
                 - rtsp://{FRIGATE_E1_ZOOM_01_RTSP_USERNAME}:{FRIGATE_E1_ZOOM_01_RTSP_PASSWORD}@{FRIGATE_E1_ZOOM_01_HOST}/h264Preview_01_sub
@@ -133,7 +133,7 @@ spec:
                 stream_name: e1-zoom-01-sub
               ffmpeg:
                 output_args:
-                  record: preset-record-generic
+                  record: preset-record-generic-audio-copy
                 inputs:
                   - path: rtsp://127.0.0.1:8554/e1-zoom-01?video&audio
                     input_args: preset-rtsp-restream
