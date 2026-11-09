@@ -133,7 +133,7 @@ spec:
                 stream_name: e1-zoom-01-sub
               ffmpeg:
                 output_args:
-                  record: preset-record-generic-audio-copy
+                  record: preset-record-generic
                 inputs:
                   - path: rtsp://127.0.0.1:8554/e1-zoom-01?video&audio
                     input_args: preset-rtsp-restream
