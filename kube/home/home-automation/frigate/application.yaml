@@ -90,7 +90,12 @@ spec:
               intel_gpu_device: "drm:/dev/dri/card0"
 
           detect:
-            enabled: false
+            enabled: true
+
+          objects:
+            track:
+              - person
+              - cat
 
           record:
             enabled: true
