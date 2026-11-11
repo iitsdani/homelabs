@@ -8,5 +8,5 @@ spec:
   bootstrap: true
   repo: https://prometheus-community.github.io/helm-charts
   chart: *name
-  version: 33.0.1
+  version: 33.0.2
   targetNamespace: *namespace
