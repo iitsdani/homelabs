@@ -51,7 +51,7 @@ spec:
               main:
                 image:
                   repository: ghcr.io/immich-app/immich-machine-learning
-                  tag: v3.4.0-openvino
+                  tag: v3.4.1-openvino
                 env:
                   TRANSFORMERS_CACHE: /cache
                 resources:
