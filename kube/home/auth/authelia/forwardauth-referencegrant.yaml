@@ -1,0 +1,17 @@
+---
+# Allow media SecurityPolicies to reference Authelia across namespaces.
+# Add source namespaces here when other workloads use Authelia forward auth.
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: ReferenceGrant
+metadata:
+  name: forwardauth
+  namespace: auth
+spec:
+  from:
+    - group: gateway.envoyproxy.io
+      kind: SecurityPolicy
+      namespace: media
+  to:
+    - group: ""
+      kind: Service
+      name: authelia

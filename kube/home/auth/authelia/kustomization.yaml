@@ -6,6 +6,7 @@ kind: Kustomization
 resources:
   - application.yaml
   - authelia-cnpg-cluster.yaml
+  - forwardauth-referencegrant.yaml
   - redis-application.yaml
 
 generators:

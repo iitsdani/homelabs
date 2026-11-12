@@ -100,6 +100,20 @@ configMap:
       require_number: true
       require_special: true
 
+  access_control:
+    default_policy: two_factor
+    rules:
+      - domain: &arr_domains
+          - sonarr.home.cianfr.one
+          - radarr.home.cianfr.one
+          - lidarr.home.cianfr.one
+          - prowlarr.home.cianfr.one
+          - bazarr.home.cianfr.one
+        subject: "group:media-admin"
+        policy: one_factor
+      - domain: *arr_domains
+        policy: deny
+
   session:
     cookies:
       - domain: cianfr.one
