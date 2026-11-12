@@ -1,0 +1,12 @@
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: Backend
+metadata:
+  name: argocd-server
+spec:
+  endpoints:
+    - fqdn:
+        hostname: argocd-server.argo-system.svc.cluster.local
+        port: 443
+  tls:
+    insecureSkipVerify: true

@@ -19,6 +19,10 @@ spec:
       valuesObject:
         crds:
           enabled: false
+        config:
+          envoyGateway:
+            extensionApis:
+              enableBackend: true
         deployment:
           replicas: 2
           envoyGateway:
