@@ -66,6 +66,7 @@ spec:
                   PGID: 1000
                   PGUID: 1000
                   TZ: Europe/Amsterdam
+                  LIDARR__AUTH__METHOD: External
                 image:
                   repository: ghcr.io/linuxserver/lidarr
                   tag: nightly
