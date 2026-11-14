@@ -9,3 +9,24 @@ kind: ServiceAccount
 metadata:
   name: kyverno-admission-controller
   namespace: kyverno-system
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kyverno-cleanup-placeholder
+  namespace: kyverno-system
+  labels:
+    app.kubernetes.io/part-of: kyverno
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      app: kyverno-cleanup-placeholder
+  template:
+    metadata:
+      labels:
+        app: kyverno-cleanup-placeholder
+    spec:
+      containers:
+        - name: placeholder
+          image: registry.k8s.io/pause:3.10
