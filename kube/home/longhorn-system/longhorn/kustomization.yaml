@@ -8,6 +8,7 @@ resources:
   - route.yaml
   - longhorn-nixos-path.yaml
   - longhorn-add-nixos-path.yaml
+  - longhorn-native-nixos-path.yaml
   # NOTE: apparently we cannot use globbing...
   # https://github.com/kubernetes-sigs/kustomize/issues/119
   - storageClasses/nvme-1-replicas.yaml
