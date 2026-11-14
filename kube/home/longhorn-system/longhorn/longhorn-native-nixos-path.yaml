@@ -48,7 +48,4 @@ spec:
   matchResources:
     namespaceSelector:
       matchLabels:
-        kubernetes.io/metadata.name: default
-    objectSelector:
-      matchLabels:
-        homelabs.cianfr.one/test-longhorn-nixos-path: "true"
+        kubernetes.io/metadata.name: longhorn-system
