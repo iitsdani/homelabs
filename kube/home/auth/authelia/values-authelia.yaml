@@ -109,6 +109,7 @@ configMap:
           - lidarr.home.cianfr.one
           - prowlarr.home.cianfr.one
           - bazarr.home.cianfr.one
+          - slskd.home.cianfr.one
         subject: "group:media-admin"
         policy: one_factor
       - domain: *arr_domains

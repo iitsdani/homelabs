@@ -29,6 +29,12 @@ spec:
 
         service:
           main:
+            type: ClusterIP
+            controller: main
+            ports:
+              http:
+                port: &port 8080
+          soulseek:
             type: LoadBalancer
             controller: main
             ipFamilyPolicy: RequireDualStack
@@ -38,8 +44,6 @@ spec:
             annotations:
               io.cilium/lb-ipam-ips: "10.0.3.2,2a02:a469:9060:3::2"
             ports:
-              http:
-                port: &port 8080
               slsk:
                 port: 50429
 
