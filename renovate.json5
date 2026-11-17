@@ -17,6 +17,12 @@
       versioning: "pep440",
     },
     {
+      matchDatasources: ["docker"],
+      matchPackageNames: ["docker.io/jellyfin/jellyfin"],
+      versioning: "loose",
+      allowedVersions: "/^\\d+\\.\\d+(\\.\\d+)?$/",
+    },
+    {
       matchManagers: ["nix"],
     },
     // Automerge patch updates.
