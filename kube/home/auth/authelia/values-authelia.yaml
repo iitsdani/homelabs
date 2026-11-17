@@ -105,7 +105,6 @@ configMap:
     rules:
       - domain: &arr_domains
           - sonarr.home.cianfr.one
-          - sonarr-legacy.home.cianfr.one
           - radarr.home.cianfr.one
           - lidarr.home.cianfr.one
           - prowlarr.home.cianfr.one
