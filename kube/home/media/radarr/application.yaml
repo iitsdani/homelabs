@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: radarr-legacy
+  name: radarr
   namespace: argo-system
   annotations:
     argocd.argoproj.io/sync-wave: "1"
@@ -15,7 +15,7 @@ spec:
     chart: app-template
     targetRevision: 5.0.1
     helm:
-      releaseName: radarr-legacy
+      releaseName: radarr
       valuesObject:
         defaultPodOptions:
           labels:
@@ -39,7 +39,7 @@ spec:
           internal-gw:
             enabled: true
             kind: HTTPRoute
-            hostnames: [radarr-legacy.home.cianfr.one]
+            hostnames: [radarr.home.cianfr.one]
             parentRefs:
               - name: internal-gw
                 namespace: networking
@@ -68,6 +68,20 @@ spec:
                   PGUID: 1000
                   TZ: Europe/Amsterdam
                   RADARR__AUTH__METHOD: External
+                  RADARR__POSTGRES__HOST: media-cnpg-cluster-rw.media.svc.cluster.local
+                  RADARR__POSTGRES__PORT: 5432
+                  RADARR__POSTGRES__MAINDB: radarr
+                  RADARR__POSTGRES__LOGDB: radarr_log
+                  RADARR__POSTGRES__USER:
+                    valueFrom:
+                      secretKeyRef:
+                        name: media-cnpg-radarr
+                        key: username
+                  RADARR__POSTGRES__PASSWORD:
+                    valueFrom:
+                      secretKeyRef:
+                        name: media-cnpg-radarr
+                        key: password
                 image:
                   repository: ghcr.io/linuxserver/radarr
                   tag: 6.4.4@sha256:7a20f20de63706eee2ff6e4ac1f989a70c961f456aa47ccb6c78f2bb7657d9ae
@@ -79,7 +93,7 @@ spec:
         persistence:
           config:
             enabled: true
-            existingClaim: radarr-config-v2
+            existingClaim: radarr-config-v3
             globalMounts: [{ path: /config }]
             type: persistentVolumeClaim
           media:
