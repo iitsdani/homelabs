@@ -1,0 +1,24 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: media-cnpg-sonarr
+  namespace: media
+spec:
+  cluster:
+    name: media-cnpg-cluster
+  name: sonarr
+  owner: sonarr
+  databaseReclaimPolicy: retain
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: media-cnpg-sonarr-log
+  namespace: media
+spec:
+  cluster:
+    name: media-cnpg-cluster
+  name: sonarr_log
+  owner: sonarr
+  databaseReclaimPolicy: retain

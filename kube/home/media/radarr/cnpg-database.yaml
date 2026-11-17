@@ -1,0 +1,24 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: media-cnpg-radarr
+  namespace: media
+spec:
+  cluster:
+    name: media-cnpg-cluster
+  name: radarr
+  owner: radarr
+  databaseReclaimPolicy: retain
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: media-cnpg-radarr-log
+  namespace: media
+spec:
+  cluster:
+    name: media-cnpg-cluster
+  name: radarr_log
+  owner: radarr
+  databaseReclaimPolicy: retain
