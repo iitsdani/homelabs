@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: radarr
+  name: radarr-legacy
   namespace: argo-system
   annotations:
     argocd.argoproj.io/sync-wave: "1"
@@ -15,7 +15,7 @@ spec:
     chart: app-template
     targetRevision: 5.0.1
     helm:
-      releaseName: radarr
+      releaseName: radarr-legacy
       valuesObject:
         defaultPodOptions:
           labels:
@@ -39,7 +39,7 @@ spec:
           internal-gw:
             enabled: true
             kind: HTTPRoute
-            hostnames: [radarr.home.cianfr.one]
+            hostnames: [radarr-legacy.home.cianfr.one]
             parentRefs:
               - name: internal-gw
                 namespace: networking
@@ -57,7 +57,7 @@ spec:
             labels:
               storage.cianfr.one/nas: "true"
               storage.cianfr.one/longhorn: "true"
-            replicas: 0
+            replicas: 1
             strategy: Recreate
             annotations:
               reloader.stakater.com/auto: "true"
