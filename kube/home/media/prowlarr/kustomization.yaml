@@ -5,8 +5,10 @@ kind: Kustomization
 
 resources:
   - application.yaml
+  - application-legacy.yaml
   - cnpg-database.yaml
   - prowlarr-config-v2.yaml
+  - prowlarr-config-v3.yaml
 
 generators:
   - ksops.yaml
