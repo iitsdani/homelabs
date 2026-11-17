@@ -57,7 +57,7 @@ spec:
             labels:
               storage.cianfr.one/nas: "true"
               storage.cianfr.one/longhorn: "true"
-            replicas: 0
+            replicas: 1
             strategy: Recreate
             annotations:
               reloader.stakater.com/auto: "true"
@@ -68,6 +68,20 @@ spec:
                   PGUID: 1000
                   TZ: Europe/Amsterdam
                   SONARR__AUTH__METHOD: External
+                  SONARR__POSTGRES__HOST: media-cnpg-cluster-rw.media.svc.cluster.local
+                  SONARR__POSTGRES__PORT: 5432
+                  SONARR__POSTGRES__MAINDB: sonarr
+                  SONARR__POSTGRES__LOGDB: sonarr_log
+                  SONARR__POSTGRES__USER:
+                    valueFrom:
+                      secretKeyRef:
+                        name: media-cnpg-sonarr
+                        key: username
+                  SONARR__POSTGRES__PASSWORD:
+                    valueFrom:
+                      secretKeyRef:
+                        name: media-cnpg-sonarr
+                        key: password
                 image:
                   repository: ghcr.io/linuxserver/sonarr
                   tag: 4.0.20@sha256:c7d1df25e428da6c9ace05daea0d34e59522978a3843ea1944812f855af4086c
@@ -79,7 +93,7 @@ spec:
         persistence:
           config:
             enabled: true
-            existingClaim: sonarr-config-v2
+            existingClaim: sonarr-config-v3
             globalMounts: [{ path: /config }]
             type: persistentVolumeClaim
           media:

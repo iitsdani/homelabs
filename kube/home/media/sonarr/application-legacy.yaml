@@ -1,0 +1,100 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: sonarr-legacy
+  namespace: argo-system
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://bjw-s-labs.github.io/helm-charts
+    chart: app-template
+    targetRevision: 5.0.1
+    helm:
+      releaseName: sonarr-legacy
+      valuesObject:
+        defaultPodOptions:
+          labels:
+            storage.cianfr.one/nas: "true"
+            storage.cianfr.one/longhorn: "true"
+          securityContext:
+            fsGroup: 1000
+            fsGroupChangePolicy: OnRootMismatch
+            runAsGroup: 1000
+            runAsUser: 1000
+
+        service:
+          main:
+            type: ClusterIP
+            controller: main
+            ports:
+              http:
+                port: 8989
+
+        route:
+          internal-gw:
+            enabled: true
+            kind: HTTPRoute
+            hostnames: [sonarr-legacy.home.cianfr.one]
+            parentRefs:
+              - name: internal-gw
+                namespace: networking
+                sectionName: https
+            rules:
+              - matches:
+                  - path: { type: PathPrefix, value: / }
+                backendRefs:
+                  - identifier: main
+                    port: http
+
+        controllers:
+          main:
+            type: deployment
+            labels:
+              storage.cianfr.one/nas: "true"
+              storage.cianfr.one/longhorn: "true"
+            replicas: 1
+            strategy: Recreate
+            annotations:
+              reloader.stakater.com/auto: "true"
+            containers:
+              main:
+                env:
+                  PGID: 1000
+                  PGUID: 1000
+                  TZ: Europe/Amsterdam
+                  SONARR__AUTH__METHOD: External
+                image:
+                  repository: ghcr.io/linuxserver/sonarr
+                  tag: 4.0.20@sha256:c7d1df25e428da6c9ace05daea0d34e59522978a3843ea1944812f855af4086c
+                probes:
+                  liveness: { enabled: false }
+                  readiness: { enabled: false }
+                  startup: { enabled: true }
+
+        persistence:
+          config:
+            enabled: true
+            existingClaim: sonarr-config-v2
+            globalMounts: [{ path: /config }]
+            type: persistentVolumeClaim
+          media:
+            enabled: true
+            existingClaim: media-data-v4
+            globalMounts: [{ path: /data }]
+            type: persistentVolumeClaim
+  destination:
+    name: in-cluster
+    namespace: media
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - ServerSideApply=true
+      - ApplyOutOfSyncOnly=true
+      - SkipDryRunOnMissingResource=true
