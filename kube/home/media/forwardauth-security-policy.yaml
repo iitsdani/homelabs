@@ -12,6 +12,7 @@ spec:
     - { group: gateway.networking.k8s.io, kind: HTTPRoute, name: radarr }
     - { group: gateway.networking.k8s.io, kind: HTTPRoute, name: lidarr }
     - { group: gateway.networking.k8s.io, kind: HTTPRoute, name: prowlarr }
+    - { group: gateway.networking.k8s.io, kind: HTTPRoute, name: prowlarr-legacy }
     - { group: gateway.networking.k8s.io, kind: HTTPRoute, name: bazarr }
     - { group: gateway.networking.k8s.io, kind: HTTPRoute, name: slskd }
   extAuth:
