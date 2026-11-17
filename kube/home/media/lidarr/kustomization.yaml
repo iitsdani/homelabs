@@ -5,4 +5,8 @@ kind: Kustomization
 
 resources:
   - application.yaml
+  - cnpg-database.yaml
   - persistentvolumeclaims.yaml
+
+generators:
+  - ksops.yaml

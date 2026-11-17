@@ -59,6 +59,13 @@ spec:
         createrole: false
         passwordSecret:
           name: media-cnpg-prowlarr
+      - name: lidarr
+        login: true
+        superuser: false
+        createdb: false
+        createrole: false
+        passwordSecret:
+          name: media-cnpg-lidarr
       - name: bazarr
         login: true
         superuser: false

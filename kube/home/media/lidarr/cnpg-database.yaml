@@ -1,0 +1,24 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: media-cnpg-lidarr
+  namespace: media
+spec:
+  cluster:
+    name: media-cnpg-cluster
+  name: lidarr
+  owner: lidarr
+  databaseReclaimPolicy: retain
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: media-cnpg-lidarr-log
+  namespace: media
+spec:
+  cluster:
+    name: media-cnpg-cluster
+  name: lidarr_log
+  owner: lidarr
+  databaseReclaimPolicy: retain

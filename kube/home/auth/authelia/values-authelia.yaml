@@ -107,6 +107,7 @@ configMap:
           - sonarr.home.cianfr.one
           - radarr.home.cianfr.one
           - lidarr.home.cianfr.one
+          - lidarr-legacy.home.cianfr.one
           - prowlarr.home.cianfr.one
           - bazarr.home.cianfr.one
           - slskd.home.cianfr.one
