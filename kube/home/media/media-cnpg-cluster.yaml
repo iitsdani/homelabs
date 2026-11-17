@@ -1,0 +1,82 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: media-cnpg-cluster
+  namespace: media
+  labels:
+    storage.cianfr.one/longhorn: "true"
+spec:
+  inheritedMetadata:
+    labels:
+      storage.cianfr.one/longhorn: "true"
+
+  instances: 1
+  imageName: ghcr.io/cloudnative-pg/postgresql:18.6
+
+  storage:
+    size: 5Gi
+    storageClass: longhorn-nvme-3-replicas
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 512Mi
+    limits:
+      memory: 2Gi
+
+  enableSuperuserAccess: true
+  superuserSecret:
+    name: media-cnpg-postgres
+
+  bootstrap:
+    initdb:
+      database: radarr
+      owner: radarr
+      secret:
+        name: media-cnpg-radarr
+
+  managed:
+    roles:
+      - name: radarr
+        login: true
+        superuser: false
+        createdb: false
+        createrole: false
+        passwordSecret:
+          name: media-cnpg-radarr
+      - name: sonarr
+        login: true
+        superuser: false
+        createdb: false
+        createrole: false
+        passwordSecret:
+          name: media-cnpg-sonarr
+      - name: prowlarr
+        login: true
+        superuser: false
+        createdb: false
+        createrole: false
+        passwordSecret:
+          name: media-cnpg-prowlarr
+      - name: bazarr
+        login: true
+        superuser: false
+        createdb: false
+        createrole: false
+        passwordSecret:
+          name: media-cnpg-bazarr
+    services:
+      disabledDefaultServices: ["ro", "r"]
+      additional:
+        - selectorType: rw
+          serviceTemplate:
+            metadata:
+              name: media-cnpg
+            spec:
+              type: LoadBalancer
+              loadBalancerClass: tailscale
+          updateStrategy: patch
+
+  monitoring:
+    enablePodMonitor: true

@@ -1,0 +1,12 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: media-cnpg-bazarr
+  namespace: media
+spec:
+  cluster:
+    name: media-cnpg-cluster
+  name: bazarr
+  owner: bazarr
+  databaseReclaimPolicy: retain
