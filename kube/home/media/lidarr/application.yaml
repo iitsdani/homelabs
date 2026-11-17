@@ -57,7 +57,8 @@ spec:
             labels:
               storage.cianfr.one/nas: "true"
               storage.cianfr.one/longhorn: "true"
-            replicas: 0
+            replicas: 1
+            strategy: Recreate
             annotations:
               reloader.stakater.com/auto: "true"
             containers:
@@ -67,6 +68,20 @@ spec:
                   PGUID: 1000
                   TZ: Europe/Amsterdam
                   LIDARR__AUTH__METHOD: External
+                  LIDARR__POSTGRES__HOST: media-cnpg-cluster-rw.media.svc.cluster.local
+                  LIDARR__POSTGRES__PORT: 5432
+                  LIDARR__POSTGRES__MAINDB: lidarr
+                  LIDARR__POSTGRES__LOGDB: lidarr_log
+                  LIDARR__POSTGRES__USER:
+                    valueFrom:
+                      secretKeyRef:
+                        name: media-cnpg-lidarr
+                        key: username
+                  LIDARR__POSTGRES__PASSWORD:
+                    valueFrom:
+                      secretKeyRef:
+                        name: media-cnpg-lidarr
+                        key: password
                 image:
                   repository: ghcr.io/linuxserver/lidarr
                   tag: nightly
@@ -78,7 +93,7 @@ spec:
         persistence:
           config:
             enabled: true
-            existingClaim: lidarr-config-v2
+            existingClaim: lidarr-config-v3
             globalMounts: [{ path: /config }]
             type: persistentVolumeClaim
           media:
