@@ -8,6 +8,8 @@ resources:
   - forwardauth-security-policy.yaml
   - media-data-v4.yaml
   - media-cnpg-cluster.yaml
-  - media-cnpg-credentials.yaml
   - media-videos-v1.yaml
   - media-videos-v2.yaml
+
+generators:
+  - ksops.yaml
