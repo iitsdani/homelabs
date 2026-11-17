@@ -108,7 +108,6 @@ configMap:
           - radarr.home.cianfr.one
           - lidarr.home.cianfr.one
           - prowlarr.home.cianfr.one
-          - prowlarr-legacy.home.cianfr.one
           - bazarr.home.cianfr.one
           - slskd.home.cianfr.one
         subject: "group:media-admin"
