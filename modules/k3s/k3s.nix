@@ -6,6 +6,14 @@
   ];
 
   services.k3s.enable = true;
+  services.k3s.extraFlags = [
+    # Evict pods under memory pressure before node OOM disrupts Longhorn I/O;
+    # retain the existing disk eviction thresholds.
+    "--kubelet-arg=eviction-hard=memory.available<1Gi,imagefs.available<5%,nodefs.available<5%"
+    "--kubelet-arg=eviction-soft=memory.available<2Gi"
+    "--kubelet-arg=eviction-soft-grace-period=memory.available=2m"
+    "--kubelet-arg=eviction-max-pod-grace-period=30"
+  ];
 
   sops.secrets."clusters/nl/token" = { };
 
