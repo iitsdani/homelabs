@@ -3,20 +3,17 @@
 { lib, ... }:
 
 {
-  # NOTE: overrides the Tailnet hostname target, only to be used if on LAN
-  # and Tailscale is giving problems.
-  #
-  # deployment.targetHost = "10.0.1.3";
   deployment.targetUser = "root";
   deployment.tags = [ "type-server" "k8s-server" "zone-home" ];
   deployment.buildOnTarget = true;
 
   nixpkgs.system = "x86_64-linux";
 
-  networking.hostName = "nl-k8s-03";
-  networking.domain = "home.arpa";
+  networking.hostName = "home-k8s-03";
+  networking.domain = "lan.cianfr.one";
 
-  time.timeZone = "Europe/Amsterdam";
+  time.timeZone = "Europe/Rome";
+  services.journald.settings.Journal.SystemMaxUse = "2G";
 
   services.k3s.extraFlags = lib.mkAfter [
     "--node-label media.transcoding.gpu=medium"
@@ -26,8 +23,6 @@
   ];
 
   imports = [
-    nixos-hardware.nixosModules.common-pc-ssd
-    nixos-hardware.nixosModules.common-cpu-intel
     nixos-hardware.nixosModules.common-gpu-intel
     ../../modules/server.nix
     ../../modules/iot-lan-route.nix

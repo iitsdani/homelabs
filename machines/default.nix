@@ -3,7 +3,7 @@ inputs@{ nixpkgs, sops-nix, disko, ... }:
 {
   nl-k8s-01 = import ./nl-k8s-01 inputs;
   nl-k8s-02 = import ./nl-k8s-02 inputs;
-  nl-k8s-03 = import ./nl-k8s-03 inputs;
+  home-k8s-03 = import ./home-k8s-03 inputs;
   nl-k8s-04 = import ./nl-k8s-04 inputs;
 
   meta.nixpkgs = import nixpkgs {
