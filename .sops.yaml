@@ -8,7 +8,7 @@ keys:
   # where the SSH host key is obtained from the remote machine.
   - &nl-k8s-01 age1krvwskkgw5f3ufcwgl6l2jz0emxnkn40wpup2aqhqdulqy2x99js4p5fnq
   - &nl-k8s-02 age143yn95y2n546rlqrhgy2nzrz0w87ks7fk9dlwp3ylt0dfflczuhqrv2lmv
-  - &nl-k8s-03 age1n6eedefn6afu4e2f492xhfhckrayvp65jp7hla3x4nwj2zwz7sasw6ls6k
+  - &home-k8s-03 age1z87zfq20a7ygtuvgp5qal04ypmxyxt7ks7mlzl3578jufk3j5dzqpv2drv
   - &nl-k8s-04 age12g62sqmpz4pztx8zn94n8rxzklj7fj805g78m50kxu44yqy26azs2vph2y
   - &de-fsn1-k8s-1 age1tcaqw9c5sfdys359kzs2t599d2sje7sg7fha8ts42955qk9t3yss075kcn
 creation_rules:
@@ -20,7 +20,7 @@ creation_rules:
           - *github-actions
           - *nl-k8s-01
           - *nl-k8s-02
-          - *nl-k8s-03
+          - *home-k8s-03
           - *nl-k8s-04
           - *de-fsn1-k8s-1
   - path_regex: "machines/dejima/secrets.yaml"
@@ -44,7 +44,7 @@ creation_rules:
           - *github-actions
           - *nl-k8s-01
           - *nl-k8s-02
-          - *nl-k8s-03
+          - *home-k8s-03
           - *nl-k8s-04
           - *de-fsn1-k8s-1
   - path_regex: "modules/k3s/secrets/.*.yaml"
@@ -56,7 +56,7 @@ creation_rules:
           - *github-actions
           - *nl-k8s-01
           - *nl-k8s-02
-          - *nl-k8s-03
+          - *home-k8s-03
           - *nl-k8s-04
           - *de-fsn1-k8s-1
   - path_regex: "kube/.*.enc.yaml"
