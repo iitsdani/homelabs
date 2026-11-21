@@ -54,7 +54,7 @@ spec:
           concurrentAutomaticEngineUpgradePerNodeLimit: 3
           replicaReplenishmentWaitInterval: 60
         defaultBackupStore:
-          backupTarget: nfs://truenas.home.arpa:/mnt/zpool-nl-01/longhorn-backups-v2?nfsOptions=soft,timeo=330,retrans=3
+          backupTarget: nfs://10.0.0.6:/mnt/zpool-nl-01/longhorn-backups-v2?nfsOptions=soft,timeo=330,retrans=3
           pollInterval: 300
   destination:
     name: in-cluster
