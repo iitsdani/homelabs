@@ -6,8 +6,8 @@ metadata:
   namespace: auth
   labels:
     storage.cianfr.one/longhorn: "true"
-  annotations:
-    cnpg.io/hibernation: "on"
+  # annotations:
+  #   cnpg.io/hibernation: "on"
 spec:
   inheritedMetadata:
     labels:

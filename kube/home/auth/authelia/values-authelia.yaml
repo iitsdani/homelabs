@@ -14,7 +14,7 @@ ingress:
 
 pod:
   kind: Deployment # Only need a single deployment/replica for now.
-  replicas: 0
+  replicas: 1
   annotations:
     # Restarts the Deployment if the configmaps/secrets change.
     reloader.stakater.com/auto: "true"
