@@ -37,6 +37,7 @@
     ./hardware-configuration.nix
     ./networking.nix
     ./power-management.nix
+    ./pve-qdevice.nix
     ./tailscale.nix
   ];
 }
