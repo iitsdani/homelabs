@@ -3,11 +3,11 @@
 The `nl-pve` cluster uses an external Corosync QDevice to maintain quorum when
 one Proxmox node is unavailable.
 
-| Host | Address | Role |
-| --- | --- | --- |
-| `nl-pve-01` | `10.0.2.1` | Proxmox node, one vote |
-| `nl-pve-02` | `10.0.2.2` | Proxmox node, one vote |
-| `nl-k8s-04` | `10.0.1.4` | QNetd arbitrator, one vote |
+| Host                         | Address    | Role                       |
+| ---------------------------- | ---------- | -------------------------- |
+| `nl-pve-01`                  | `10.0.2.1` | Proxmox node, one vote     |
+| `home-pve-02.lan.cianfr.one` | `10.0.2.2` | Proxmox node, one vote     |
+| `nl-k8s-04`                  | `10.0.1.4` | QNetd arbitrator, one vote |
 
 Quorum requires two of three votes. Either Proxmox node can retain quorum with
 QNetd available. If QNetd is unavailable, both Proxmox nodes must remain online.
