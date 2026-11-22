@@ -92,12 +92,6 @@ spec:
           ffmpeg:
             hwaccel_args: preset-intel-qsv-h264
 
-          # This is needed for Proxmox VE Intel GPU passthrough, where frigate gets confused
-          # on which device to actually use (should be card0).
-          telemetry:
-            stats:
-              intel_gpu_device: "drm:/dev/dri/card0"
-
           detect:
             enabled: true
 
@@ -132,13 +126,13 @@ spec:
                 - "ffmpeg:http://{FRIGATE_E1_ZOOM_01_HOST}/flv?port=1935&app=bcs&stream=channel0_main.bcs&user={FRIGATE_E1_ZOOM_01_RTSP_USERNAME}&password={FRIGATE_E1_ZOOM_01_RTSP_PASSWORD}#video=copy#audio=copy"
                 - "ffmpeg:e1-zoom-01#audio=opus"
               e1-zoom-01-sub:
-                - rtsp://{FRIGATE_E1_ZOOM_01_RTSP_USERNAME}:{FRIGATE_E1_ZOOM_01_RTSP_PASSWORD}@{FRIGATE_E1_ZOOM_01_HOST}/h264Preview_01_sub
+                - "ffmpeg:http://{FRIGATE_E1_ZOOM_01_HOST}/flv?port=1935&app=bcs&stream=channel0_ext.bcs&user={FRIGATE_E1_ZOOM_01_RTSP_USERNAME}&password={FRIGATE_E1_ZOOM_01_RTSP_PASSWORD}#video=copy#audio=copy"
                 - "ffmpeg:e1-zoom-01-sub#audio=opus"
               e1-zoom-02:
-                - rtsp://{FRIGATE_E1_ZOOM_02_RTSP_USERNAME}:{FRIGATE_E1_ZOOM_02_RTSP_PASSWORD}@{FRIGATE_E1_ZOOM_02_HOST}/h264Preview_01_main
+                - "ffmpeg:http://{FRIGATE_E1_ZOOM_02_HOST}/flv?port=1935&app=bcs&stream=channel0_main.bcs&user={FRIGATE_E1_ZOOM_02_RTSP_USERNAME}&password={FRIGATE_E1_ZOOM_02_RTSP_PASSWORD}#video=copy#audio=copy"
                 - "ffmpeg:e1-zoom-02#audio=opus"
               e1-zoom-02-sub:
-                - rtsp://{FRIGATE_E1_ZOOM_02_RTSP_USERNAME}:{FRIGATE_E1_ZOOM_02_RTSP_PASSWORD}@{FRIGATE_E1_ZOOM_02_HOST}/h264Preview_01_sub
+                - "ffmpeg:http://{FRIGATE_E1_ZOOM_02_HOST}/flv?port=1935&app=bcs&stream=channel0_ext.bcs&user={FRIGATE_E1_ZOOM_02_RTSP_USERNAME}&password={FRIGATE_E1_ZOOM_02_RTSP_PASSWORD}#video=copy#audio=copy"
                 - "ffmpeg:e1-zoom-02-sub#audio=opus"
 
           cameras:
