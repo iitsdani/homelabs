@@ -73,7 +73,16 @@ spec:
             existingClaim: frigate-config-v2
           media:
             enabled: true
-            existingClaim: frigate-media-v3
+            existingClaim: frigate-exports-v1
+
+        extraVolumes:
+          - name: recordings
+            persistentVolumeClaim:
+              claimName: frigate-recordings-v1
+
+        extraVolumeMounts:
+          - name: recordings
+            mountPath: /media/frigate/recordings
 
         config: |
           mqtt:

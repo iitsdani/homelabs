@@ -3,18 +3,16 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: frigate-media-v3
+  name: frigate-recordings-v1
 spec:
   capacity:
     storage: 500Gi
   accessModes:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain
-  # NOTE: maprootuser and maprootgroup are set to root manually
-  # to avoid permission issues with Frigate writing to the NFS share.
   nfs:
     server: truenas.home.arpa
-    path: /mnt/pool0/cctv
+    path: /mnt/hdd2/frigate-recordings
   mountOptions:
     - nfsvers=4.1
     - hard
@@ -24,11 +22,11 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: frigate-media-v3
+  name: frigate-recordings-v1
   namespace: home-automation
 spec:
   storageClassName: ""
-  volumeName: frigate-media-v3
+  volumeName: frigate-recordings-v1
   accessModes:
     - ReadWriteMany
   resources:
