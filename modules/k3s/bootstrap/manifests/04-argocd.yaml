@@ -10,7 +10,7 @@ spec:
   bootstrap: true
   repo: https://argoproj.github.io/argo-helm
   chart: argo-cd
-  version: "10.18.3"
+  version: "10.19.1"
   targetNamespace: argo-system
   createNamespace: true
   valuesContent: |-
