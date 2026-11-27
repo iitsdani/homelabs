@@ -43,7 +43,7 @@ spec:
               main:
                 image:
                   repository: eceasy/cli-proxy-api
-                  tag: v8.1.6@sha256:e64b3e9814f3a263c3cd4b659c34a419a935e29ed60077a5739880c217292f34
+                  tag: v8.1.7@sha256:fd49f56bfcfbfc424709e501f4f8c9ff6e28ff8d8d039eb75d28850201511879
                 command:
                   - /CLIProxyAPI/CLIProxyAPI
                 args:
