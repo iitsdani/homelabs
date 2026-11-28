@@ -103,7 +103,7 @@ spec:
             type: deployment
             labels:
               storage.cianfr.one/nas: "true"
-            replicas: 1
+            replicas: 0
             strategy: RollingUpdate
             annotations:
               reloader.stakater.com/auto: "true"

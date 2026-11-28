@@ -14,7 +14,7 @@ resources:
   - storageClasses/nvme-3-replicas.yaml
   - storageClasses/nvme-encrypted-2-replicas.yaml
   - storageClasses/nvme-encrypted-3-replicas.yaml
-  - recurringJobs/backup-24h.yaml
+  # - recurringJobs/backup-24h.yaml
   - recurringJobs/snapshot-6h.yaml
   - recurringJobs/trim-weekly.yaml
 
